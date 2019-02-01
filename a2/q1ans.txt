@@ -1,0 +1,35 @@
+q1 
+========================================================
+a:
+
+Times : 2000000 size: 20
+Internal Buffer no opt:  4.55s
+External Buffer no opt:  10.30s
+Internal Buffer with opt:  4.37s
+External Buffer with opt:  5.91s
+
+========================================================
+b:
+The external buffer is 5.75s slower than internal buffer
+Reason:
+
+
+========================================================
+c:
+For Internal buffer, transformed program is 0.18 sec faster
+than original program
+For External buffer, transformed program is 4.39 sec faster
+than origianl program
+
+========================================================
+d:
+
+After change endl to '\n'
+Times : 2000000 size: 20
+Internal Buffer no opt:  4.61s
+External Buffer no opt:  10.28s
+Internal Buffer with opt:  4.40s
+External Buffer with opt:  5.91s
+
+Difference: For internal buffer, '\n' performace become slightly slower than endl;
+For external buffer, there are no obvious effect.
