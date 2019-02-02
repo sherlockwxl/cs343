@@ -1,35 +1,75 @@
-#include "binsertsort.h"
+#include "q2binsertsort.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 using namespace std;
 template<typename T>
 
 void Binsertsort<T>::main(){
     T pivot;
-    Binsertsort<T> left(Sentinel);
-    Binsertsort<T> right(Sentinel);
     pivot = value;
-    suspend();
+    set = 1;
+    try{
+        suspend();
+    }catch(Sentinel & s){
+        //_Throw left::Sentinel();
+        //_Throw right::Sentinel();
+        _Throw Sentinel();
+        insertdone = 1;
+    }
+
+    Binsertsort<T> left();
+    Binsertsort<T> right();
+
     for(;;){
-        if(value == Sentinel){
-            break;//
-        }
         if(value <= pivot){
             left.sort(value);
         }else{
             right.sort(value);
         }
 
-        suspend();
+        try{
+            suspend();
+        }catch(Sentinel & s){
+            //_Throw left.Sentinel();
+            //_Throw right.Sentinel();
+            _Throw Sentinel();
+            insertdone = 1;
+            break;
+        }
     }
 
+    for(;;){
+        if(left.set == 0){
+            _Throw Sentinel();
+        }
+        value = left.retrieve();
+        try{
+            suspend();
+        }catch(Sentinel & s){
+            break;
+        }
+    }
+
+    value = pivot;
     suspend();
 
     for(;;){
-        for(;;){
-            
+        if(right.set == 0){
+            _Throw Sentinel();
+        }
+        value = right.retrieve();
+        try{
+            suspend();
+        }catch(Sentinel &){
+            break;
         }
     }
+
+    _Throw Sentinel();
+
+
+
 
 
 }
@@ -76,7 +116,8 @@ int main( int argc, char * argv[] ) {
         }
 
         stringstream currentline(line);
-        Binsertsort<TYPE> binsertsort(Sentinel);
+
+        Binsertsort<TYPE> binsertsort;
         unsigned int elementcount;
         currentline >> elementcount;//get current line element count
 
@@ -90,10 +131,10 @@ int main( int argc, char * argv[] ) {
 
         *outfile << endl;
 
-        binsertsort.sort(Sentinel)
+        _Throw Sentinel();
 
         for(unsigned int i = 0 ; i < elementcount; i++){
-            *outfile << binsertsort.retrive() << " ";
+            *outfile << binsertsort.retrieve() << " ";
         }
 
         *outfile << endl;
