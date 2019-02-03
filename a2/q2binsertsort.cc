@@ -9,69 +9,120 @@ void Binsertsort<T>::main(){
     T pivot;
     pivot = value;
     set = 1;
+    cout<<" new tree start curent pivot "<< pivot << endl;
     try{
-        suspend();
-    }catch(Sentinel & s){
-        //_Throw left::Sentinel();
-        //_Throw right::Sentinel();
-        _Throw Sentinel();
+        _Enable{
+                suspend();
+        };
+
+    }catch(Sentinel & s){//when received input done at level 1
+
+        cout<<" received input done  in waitng level 1 current pivot : "<<pivot << endl;
         insertdone = 1;
+        value = pivot;
+
+        suspend();
+        _Resume Sentinel() _At resumer();
     }
 
-    Binsertsort<T> left();
-    Binsertsort<T> right();
 
-    for(;;){
-        if(value <= pivot){
-            left.sort(value);
-        }else{
-            right.sort(value);
-        }
+    Binsertsort<T> left;
+    Binsertsort<T> right;
+    if(insertdone != 1){
 
-        try{
-            suspend();
+        try {
+            _Enable{
+                    for (;;) {
+                        cout << " get next input " << value << " current " << pivot<<endl;
+                        if (value <= pivot) {
+                            cout << " pass to left " << endl;
+                            left.sort(value);
+                        } else {
+                            cout << " pass to right " << endl;
+                            right.sort(value);
+                        }
+
+                        cout << " wait next input at current " << pivot<<endl;
+                        suspend();
+
+
+                    }
+            }
+
         }catch(Sentinel & s){
-            //_Throw left.Sentinel();
-            //_Throw right.Sentinel();
-            _Throw Sentinel();
+            cout<<" received input done in waitng level 2 current pivot : "<< pivot << endl;
+            _Resume Binsertsort<TYPE>::Sentinel() _At left;
+            _Resume Binsertsort<TYPE>::Sentinel() _At right;
             insertdone = 1;
-            break;
+
         }
     }
 
-    for(;;){
-        if(left.set == 0){
-            _Throw Sentinel();
-        }
-        value = left.retrieve();
-        try{
-            suspend();
-        }catch(Sentinel & s){
-            break;
+
+    //retrive
+    cout<<" start to retrive at "<<pivot<<endl;
+    try{
+        _Enable{
+                for(;;){
+                    if(left.set == 0){
+                        cout<<" break left retrive at "<<pivot<<endl;
+                        break;
+                    }else{
+                        cout<<" call left retrive at "<<pivot<<endl;
+                        value = left.retrieve();
+                        cout<<"left retrive return "<<value<<endl;
+                        suspend();
+                    }
+
+
+                }
         }
     }
+    _CatchResume( Sentinel& ) {
+        _Throw Sentinel();
+    }
+    catch ( Sentinel& ) {
+
+    }
+
 
     value = pivot;
-    suspend();
-
-    for(;;){
-        if(right.set == 0){
-            _Throw Sentinel();
+    cout<<" node return  "<<pivot<<endl;
+    try {
+        _Enable{
+                suspend();
         }
-        value = right.retrieve();
-        try{
-            suspend();
-        }catch(Sentinel &){
-            break;
-        }
+    }catch ( Sentinel& ) {
+        // end of less and terminate child node
     }
 
-    _Throw Sentinel();
+    try{
+        _Enable{
+                for(;;){
+                    if(right.set == 0){
+                        cout<<" break right retrive at "<<pivot<<endl;
+                        break;
+                    }else{
+                        cout<<" call right retrive at "<<pivot<<endl;
+                        value = right.retrieve();
+                        cout<<"right retrive return "<<value<<endl;
+                        suspend();
+                    }
 
 
+                }
+        }
+    }
+    _CatchResume( Sentinel& ) {
+        _Throw Sentinel();
+    }
+    catch ( Sentinel& ) {
 
+    }
 
+   // _Resume Sentinel() _At resumer();
 
+    _Resume Sentinel() _At resumer();
 }
 
 int main( int argc, char * argv[] ) {
@@ -131,13 +182,18 @@ int main( int argc, char * argv[] ) {
 
         *outfile << endl;
 
-        _Throw Sentinel();
+        cout<<"Done input"<<endl<<endl;
+        _Resume Binsertsort<TYPE>::Sentinel() _At binsertsort;
 
         for(unsigned int i = 0 ; i < elementcount; i++){
-            *outfile << binsertsort.retrieve() << " ";
+            cout<<"Main call retrive:  ";
+            int value = binsertsort.retrieve();
+            *outfile << value << " ";
+            cout<<" and get :  " << value <<endl;
         }
 
         *outfile << endl;
     } // for
     if ( infile != &cin ) delete infile;		// close file, do not delete cin!
+    if  (outfile != &cout) delete outfile;
 } // main
