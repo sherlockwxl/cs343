@@ -3,13 +3,51 @@
 #include <fstream>
 #include <sstream>
 using namespace std;
+
+struct dictionary{
+    int key;
+    char c;
+
+    dictionary(int key, char c){
+        key = key;
+        c = c;
+    }
+
+};
+
+bool operator==(const dictionary& d1, const dictionary&d2){
+    if(d1.c == d2.c && d1.key == d2.key){
+        return true;
+    }
+    return false;
+}
+
+bool operator < (const dictionary& d1, const dictionary&d2){
+    if(d1.key < d2.key){
+        return true;
+    }
+    return false;
+}
+
+istream& operator>>(istream& is, dictionary& d){
+    is>>d.key;
+    d.c = '0' + d.key;
+    return is;
+}
+
+ostream& operator<<(ostream& os, dictionary& d){
+    os << " key: " << d.key << " value : " << d.c << " ";
+
+    return os;
+}
+
 template<typename T>
+
 
 void Binsertsort<T>::main(){
     T pivot;
     pivot = value;
     set = 1;
-    cout<<" new tree start curent pivot "<< pivot << endl;
     try{
         _Enable{
                 suspend();
@@ -17,60 +55,47 @@ void Binsertsort<T>::main(){
 
     }catch(Sentinel & s){//when received input done at level 1
 
-        cout<<" received input done  in waitng level 1 current pivot : "<<pivot << endl;
-        insertdone = 1;
         value = pivot;
+        suspend();//pass value back
 
-        suspend();
-        _Resume Sentinel() _At resumer();
+        _Resume Sentinel() _At resumer();//end current routine
     }
 
 
     Binsertsort<T> left;
     Binsertsort<T> right;
-    if(insertdone != 1){
 
-        try {
-            _Enable{
-                    for (;;) {
-                        cout << " get next input " << value << " current " << pivot<<endl;
-                        if (value <= pivot) {
-                            cout << " pass to left " << endl;
-                            left.sort(value);
-                        } else {
-                            cout << " pass to right " << endl;
-                            right.sort(value);
-                        }
-
-                        cout << " wait next input at current " << pivot<<endl;
-                        suspend();
-
-
+    try {
+        _Enable{
+                for (;;) {
+                    if (value <= pivot) {
+                        left.sort(value);
+                    } else {
+                        right.sort(value);
                     }
-            }
-
-        }catch(Sentinel & s){
-            cout<<" received input done in waitng level 2 current pivot : "<< pivot << endl;
-            _Resume Binsertsort<TYPE>::Sentinel() _At left;
-            _Resume Binsertsort<TYPE>::Sentinel() _At right;
-            insertdone = 1;
-
+                    suspend(); //wait for next input
+                }
         }
+
+    }catch(Sentinel & s){//get event and end insert stage
+
+        _Resume Binsertsort<TYPE>::Sentinel() _At left;//pass the event to left routine
+
+        _Resume Binsertsort<TYPE>::Sentinel() _At right;//pass the event to right routine
+
     }
 
 
     //retrive
-    cout<<" start to retrive at "<<pivot<<endl;
+
     try{
         _Enable{
                 for(;;){
-                    if(left.set == 0){
-                        cout<<" break left retrive at "<<pivot<<endl;
+                    if(left.set == 0){//when left was not initialized end current loop
                         break;
                     }else{
-                        cout<<" call left retrive at "<<pivot<<endl;
-                        value = left.retrieve();
-                        cout<<"left retrive return "<<value<<endl;
+
+                        value = left.retrieve();//retrive left node
                         suspend();
                     }
 
@@ -78,34 +103,34 @@ void Binsertsort<T>::main(){
                 }
         }
     }
-    _CatchResume( Sentinel& ) {
+    _CatchResume( Sentinel& s) {
         _Throw Sentinel();
-    }
-    catch ( Sentinel& ) {
 
     }
+    catch (Sentinel& s ) {
+        //do nothing
+    }
 
-
+    //retirve current node
     value = pivot;
-    cout<<" node return  "<<pivot<<endl;
     try {
         _Enable{
                 suspend();
         }
-    }catch ( Sentinel& ) {
-        // end of less and terminate child node
+    }_CatchResume( Sentinel& s) {
+        _Throw Sentinel();
+    }
+    catch ( Sentinel& s ) {
+        //do nothing
     }
 
     try{
         _Enable{
                 for(;;){
                     if(right.set == 0){
-                        cout<<" break right retrive at "<<pivot<<endl;
                         break;
                     }else{
-                        cout<<" call right retrive at "<<pivot<<endl;
                         value = right.retrieve();
-                        cout<<"right retrive return "<<value<<endl;
                         suspend();
                     }
 
@@ -116,11 +141,9 @@ void Binsertsort<T>::main(){
     _CatchResume( Sentinel& ) {
         _Throw Sentinel();
     }
-    catch ( Sentinel& ) {
-
+    catch ( Sentinel& s) {
+        //do nothing
     }
-
-   // _Resume Sentinel() _At resumer();
 
     _Resume Sentinel() _At resumer();
 }
@@ -176,23 +199,25 @@ int main( int argc, char * argv[] ) {
 
         for(unsigned int i = 0; i < elementcount; i++){
             currentline >> currentelement;
-            *outfile << currentelement << " ";
+            if(i > 0){
+                *outfile<< " ";
+            }
+            *outfile << currentelement;
+
             binsertsort.sort(currentelement);
         }
 
         *outfile << endl;
 
-        cout<<"Done input"<<endl<<endl;
         _Resume Binsertsort<TYPE>::Sentinel() _At binsertsort;
-
         for(unsigned int i = 0 ; i < elementcount; i++){
-            cout<<"Main call retrive:  ";
-            int value = binsertsort.retrieve();
-            *outfile << value << " ";
-            cout<<" and get :  " << value <<endl;
+            if(i > 0){
+                *outfile<< " ";
+            }
+            *outfile <<  binsertsort.retrieve();
         }
 
-        *outfile << endl;
+        *outfile << endl <<endl;
     } // for
     if ( infile != &cin ) delete infile;		// close file, do not delete cin!
     if  (outfile != &cout) delete outfile;
