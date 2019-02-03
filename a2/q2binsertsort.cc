@@ -3,7 +3,9 @@
 #include <fstream>
 #include <sstream>
 using namespace std;
-
+/*
+ * Example of non-basic type, the new type is named dictionary and it contains a key and a char;
+ */
 struct dictionary{
     int key;
     char c;
@@ -40,6 +42,10 @@ ostream& operator<<(ostream& os, dictionary& d){
 
     return os;
 }
+
+
+//End of non-basic type example
+
 
 template<typename T>
 
@@ -86,8 +92,9 @@ void Binsertsort<T>::main(){
     }
 
 
-    //retrive
+    //retrieve stage
 
+    //retrieve from left routine
     try{
         _Enable{
                 for(;;){
@@ -95,7 +102,7 @@ void Binsertsort<T>::main(){
                         break;
                     }else{
 
-                        value = left.retrieve();//retrive left node
+                        value = left.retrieve();//retrieve left node value
                         suspend();
                     }
 
@@ -110,8 +117,9 @@ void Binsertsort<T>::main(){
     catch (Sentinel& s ) {
         //do nothing
     }
+    //retrieve left done
 
-    //retirve current node
+    //retrieve current node
     value = pivot;
     try {
         _Enable{
@@ -124,13 +132,14 @@ void Binsertsort<T>::main(){
         //do nothing
     }
 
+    //retrieve from right routine
     try{
         _Enable{
                 for(;;){
-                    if(right.set == 0){
+                    if(right.set == 0){//when right was not initialized end current loop
                         break;
                     }else{
-                        value = right.retrieve();
+                        value = right.retrieve();//retrieve right node value
                         suspend();
                     }
 
@@ -145,6 +154,8 @@ void Binsertsort<T>::main(){
         //do nothing
     }
 
+
+    //all routine finished => end
     _Resume Sentinel() _At resumer();
 }
 
@@ -204,17 +215,18 @@ int main( int argc, char * argv[] ) {
             }
             *outfile << currentelement;
 
-            binsertsort.sort(currentelement);
+            binsertsort.sort(currentelement);//insert each of input value.
         }
 
         *outfile << endl;
 
-        _Resume Binsertsort<TYPE>::Sentinel() _At binsertsort;
+        _Resume Binsertsort<TYPE>::Sentinel() _At binsertsort;//raise sentinel event at root coroutine
+
         for(unsigned int i = 0 ; i < elementcount; i++){
             if(i > 0){
                 *outfile<< " ";
             }
-            *outfile <<  binsertsort.retrieve();
+            *outfile <<  binsertsort.retrieve();//call retrieve method on root coroutine
         }
 
         *outfile << endl <<endl;
