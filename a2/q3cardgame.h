@@ -17,7 +17,7 @@ public:
 
 class Printer {
     // YOU MAY ADD PRIVATE MEMBERS
-    deque<PlayInfo* > infoqueue;
+    deque<PlayInfo *> infoqueue;
     unsigned int NoOfPlayers;
     unsigned int NoOfCards;
     void flush();
@@ -47,4 +47,6 @@ _Coroutine Player {
     void play( unsigned int deck );
     void drink();
 };
+
+unsigned int Player::totalPlayersLeft;
 
