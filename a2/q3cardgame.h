@@ -17,7 +17,16 @@ public:
 
 class Printer {
     // YOU MAY ADD PRIVATE MEMBERS
-    deque<PlayInfo *> infoqueue;
+    deque<PlayInfo *> infoqueue;/*use deque to store playinfo, easy for access by index, also dont have to
+                                 *take care of info input order, since we will always pad the missing on
+                                 * in front. Eg: when we add playinfo for player with id 3. We will first make
+                                 * sure we have 3 playinfo(for id: 0, 1 ,2) already in the queue. So we could just
+                                 * add playinfo for the player with id 3. If next playinfo is for player 2. We can just
+                                 * check if the playinfo 2 is an empty one or not, if so we just update the existing
+                                 * one otherwise it means we need a flush. after flush id done, we add the new playinfo
+                                 * into the queue(with empty info for 0 and 1 in front)
+                                 * */
+
     unsigned int NoOfPlayers;
     unsigned int NoOfCards;
     void flush();
@@ -36,9 +45,8 @@ _Coroutine Player {
     Player *leftplayer;
     Player *rightplayer;
     unsigned int deckReceived;
-    bool drunk;
+    bool drunk;  //bool is used to stop the event loop 
     void main();
-    int status;//0 for normal 1 for dead 2 for win 3 for drunk
   public:
     enum { DEATH_DECK_DIVISOR = 7 };
     static void players( unsigned int num );

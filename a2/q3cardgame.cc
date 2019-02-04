@@ -3,9 +3,7 @@
 #include <iostream>
 #include <unistd.h>                                     // access: getpid
 
-int debug = 0;
 
-//todo : check if input is integer
 
 
 int DEATH_DECK_DIVISOR = 7;
@@ -17,27 +15,30 @@ _Event Schmilblick{};
 //methods of printer
 Printer::Printer(const unsigned int NoOfPlayers, const unsigned int NoOfCards):
     NoOfPlayers(NoOfPlayers), NoOfCards(NoOfCards){
-    printheader();
+    printheader();//print header each time printer is initialized
 };
 
 void Printer::flush() {
-    if(debug)
-    cout<<"flush called"<<endl;
-    while(infoqueue.size() != 0){
+
+    while(infoqueue.size() != 0){//keep pop the first element in infoqueue and print the element
+
         PlayInfo *tempp = infoqueue.front();
         PlayInfo temp = *tempp;
         infoqueue.pop_front();
+
         if(temp.cardTook == 0 && !temp.win){//check if empty info
             if(!temp.drunk){//empty info
-                if(infoqueue.size() !=0){
+                if(infoqueue.size() !=0){//only print tab if element is not last one in queue
                     cout<<"\t";
                 }
 
                 delete tempp;
                 continue;
             }else{//drunk
-                cout<<"D";
-                if(infoqueue.size() !=0){
+
+                cout<<"D";//print D when drunk
+
+                if(infoqueue.size() !=0){//only print tab if element is not last one in queue
                     cout<<"\t";
                 }
                 delete tempp;
@@ -63,6 +64,7 @@ void Printer::flush() {
 
 
         }
+
         //normal output
         cout<<temp.cardTook<<":"<<temp.cardLeft;
 
@@ -83,8 +85,6 @@ void Printer::flush() {
 
     }
     cout<<endl;
-    if(debug)
-        cout<<"flush done"<<endl;
 
 }
 
@@ -100,16 +100,15 @@ void Printer::printheader() {
 }
 
 void Printer::prt(unsigned int id, int took, int RemainingPlayers) {
-    if(debug)
-    cout<<"prt call id: "<< id << " took : " << took << "  reamin: "<< RemainingPlayers<<endl;
-    for(PlayInfo* p : infoqueue){
+
+    for(PlayInfo* p : infoqueue){//check if the new info will overwrite any of the existing one.
         if(p != NULL){
             if(p->id == id){
-                if(p->cardTook != 0){
+                if(p->cardTook != 0){//check if the overwrite one is an empty one
                     flush();
                     break;
                 }
-                else if(p->cardTook == 0 && p->drunk){
+                else if(p->cardTook == 0 && p->drunk){//check if the overwrite one is a drunk element
                     flush();
                     break;
                 }
@@ -117,21 +116,20 @@ void Printer::prt(unsigned int id, int took, int RemainingPlayers) {
         }
 
     }
-    if(debug)
-        cout<<"prt first flush done  now size "<<infoqueue.size()<<endl;
+
     //add new info
     //first pad the vector with empty info
     while(infoqueue.size() < id){
-        infoqueue.push_back(new PlayInfo(infoqueue.size(), 0, 0, 0, false, false, false));
+        infoqueue.push_back(new PlayInfo(infoqueue.size(), 0, 0, 0, false, false, false));//MUST use heap to add new playinfo into the infoqueue
     }
-    NoOfCards-= took;
-    int tempdirection = NoOfCards % 2 == 0 ? 1 : -1;
-    bool isdead = (NoOfCards + took)%DEATH_DECK_DIVISOR == 0 ? true: false;
-    bool isdrunk = took == 0? true:false;
-    bool iswin = (RemainingPlayers == 1 || NoOfCards == 0) ? true: false;
-    if(debug)
-    cout<<" prt insert "<<id<<" took "<< took << " dir  "<< tempdirection<< " dead  " << isdead << " drunk "<<
-        isdrunk<< " win "<< iswin<< endl;
+
+    //udpate the existing playinfo
+    NoOfCards-= took;//update the number of cards
+    int tempdirection = NoOfCards % 2 == 0 ? 1 : -1;                       //decide the pass direction
+    bool isdead = (NoOfCards + took)%DEATH_DECK_DIVISOR == 0 ? true: false;//decide if dead
+    bool isdrunk = took == 0? true:false;                                  //decide if drunk
+    bool iswin = (RemainingPlayers == 1 || NoOfCards == 0) ? true: false;  //decide if win
+
     if(id == infoqueue.size()){//if the current one should add to the end
 
         PlayInfo *tempinfo = new PlayInfo(id, took, NoOfCards, tempdirection, isdead, isdrunk, iswin);
@@ -147,10 +145,8 @@ void Printer::prt(unsigned int id, int took, int RemainingPlayers) {
         infoqueue[id]->win = iswin;
     }
 
-    if(iswin){
+    if(iswin){//when win flush the buffer
         flush();
-        if(debug)
-            cout<<"prt win flush done  now size "<<infoqueue.size()<<endl;
     }
 
 
@@ -166,13 +162,13 @@ Player::Player( Printer &printer, unsigned int id ):
     printer(printer),id(id), leftplayer(NULL), rightplayer(NULL),deckReceived(0), drunk(false){};
 
 
-void Player::start( Player &lp, Player &rp ){
+void Player::start( Player &lp, Player &rp ){//link the left and right player
     leftplayer = &lp;
     rightplayer = &rp;
     resume();
 }
 
-void Player::play( unsigned int deck ){
+void Player::play( unsigned int deck ){//update the deck and resume
     deckReceived = deck;
     resume();
 }
@@ -190,72 +186,59 @@ void Player::main(){
                     printer.prt(id, 0, totalPlayersLeft);
                     return;
                 }
-                    if(debug)
-                cout<<"id "<<id <<" received " << deckReceived<<endl;
-                //random pick cards
-                    if(debug)
-                cout<<"prng called card on " <<id<<endl;
+
+                //random pick cards and can not more than deck player has
+
                 int takeCard = min(deckReceived, (*prng)(1,8));
                 printer.prt(id, takeCard, totalPlayersLeft);
 
                 int cardRemaining = deckReceived - takeCard;
-                    if(debug)
-                cout<<"id "<<id <<" pick " << takeCard<< " remain " <<cardRemaining<<endl;
+
                 if(cardRemaining == 0){//game end
-                    if(debug)
-                    cout<<"remain 0"<<endl;
                     return;
                 }
-                if(deckReceived % DEATH_DECK_DIVISOR == 0){
-                    if(debug)
-                    cout<<"dead"<<endl;
+
+                if(deckReceived % DEATH_DECK_DIVISOR == 0){//check if user should be removed from the game
+
                     totalPlayersLeft -= 1;
-                    leftplayer->rightplayer = rightplayer;
+                    leftplayer->rightplayer = rightplayer; //remove the current player
                     rightplayer->leftplayer = leftplayer;
 
                 }
+
                 //alcohol test
-                if(deckReceived % DEATH_DECK_DIVISOR != 0){
-                    if(debug)
-                    cout<<"prng called drink on " <<id<<endl;
+                if(deckReceived % DEATH_DECK_DIVISOR != 0){//only check when user was not removed
+
                     if((*prng)(9) == 0){
-                        if(debug)
-                            cout<<"id : " <<id<<" I'm drunk"<<endl;
+
                         printer.prt(id, 0, totalPlayersLeft);
                         drunk = true;
-                        _Resume Schmilblick() _At *rightplayer;
+                        _Resume Schmilblick() _At *rightplayer;//raise event to let right player know
                         rightplayer->drink();
                     }
                 }
 
                 //check pass direction
                 if(cardRemaining % 2 == 0){
-                    if(debug)
-                    cout<<"pass right "<<cardRemaining<<endl;
                     rightplayer->play(cardRemaining);
                 }else{
-                    if(debug)
-                    cout<<"pass left "<<cardRemaining<<endl;
                     leftplayer->play(cardRemaining);
                 }
 
             }
         }
-    }_CatchResume(Schmilblick& d){
-        if(debug)
-        cout<<"id : " <<id<<" I received drunk call " <<endl;
+    }_CatchResume(Schmilblick& ){//when catch Schmilblick event
         if(drunk){//reach start point
-            drunk = false;
-            //printer.prt(id, 0, totalPlayersLeft);
-        }else{
-            printer.prt(id, 0, totalPlayersLeft);
-            _Resume Schmilblick() _At *rightplayer;
-            rightplayer->drink();
+            drunk = false;//change the boolean back to false
+        }else{//not the start point
+            printer.prt(id, 0, totalPlayersLeft);//prt drunk
+            _Resume Schmilblick() _At *rightplayer;//raise event to right
+            rightplayer->drink();//resume
         }
 
     }
-    catch(Schmilblick& d){
-        //
+    catch(Schmilblick& ){
+        //do nothing
     }
 }
 int main( int argc, char * argv[] ) {
@@ -266,7 +249,6 @@ int main( int argc, char * argv[] ) {
     unsigned int players;
     int cards;
     int seed = getpid();
-    //bool gamesset = false;
     bool playersset = false;
     bool cardsset = false;
 
@@ -300,7 +282,7 @@ int main( int argc, char * argv[] ) {
                                         "(random 10-200) [ seed (>0) | 'd' (random) ] ] ] ]" << endl;
         exit( EXIT_FAILURE );
     } // try
-    
+
     prng->seed(seed);//set up seed
 
 
