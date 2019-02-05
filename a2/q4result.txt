@@ -33,11 +33,13 @@ with flag -multi
 ================================================================
 ii:
 The 10 result of 10 runs of each version should not be the same.
-Since tasks share the same memory and switch could happen any times.
-If load/store are replaced by increment instruction. Then the value
-change of shared may got overwritten. As the switching could happen
-any time, the total lost caused by switching are not the same every time.
-So the result should be different everytime.
+Since tasks share the same memory and switch could happen any time.
+If load/write instructions of one task are replaced by load/write
+instruction of another task(execute before the process value being saved) .
+Then the change of value may got overwritten.
+As the switching could happen any time, the total lost caused by
+switching are not the same every time. So the result should be
+different every time.
 
 ================================================================
 iii:
