@@ -10,10 +10,7 @@ struct dictionary{
     int key;
     char c;
 
-    dictionary(int key, char c){
-        key = key;
-        c = c;
-    }
+
 
 };
 
@@ -37,7 +34,7 @@ istream& operator>>(istream& is, dictionary& d){
     return is;
 }
 
-ostream& operator<<(ostream& os, dictionary& d){
+ostream& operator<<(ostream& os, const dictionary& d){
     os << " key: " << d.key << " value : " << d.c << " ";
 
     return os;
@@ -68,16 +65,16 @@ void Binsertsort<T>::main(){
     }
 
 
-    Binsertsort<T> left;
-    Binsertsort<T> right;
+    Binsertsort<T> less;
+    Binsertsort<T> greater;
 
     try {
         _Enable{
                 for (;;) {
-                    if (value <= pivot) {
-                        left.sort(value);
+                    if (value < pivot) {
+                        less.sort(value);
                     } else {
-                        right.sort(value);
+                        greater.sort(value);
                     }
                     suspend(); //wait for next input
                 }
@@ -85,9 +82,9 @@ void Binsertsort<T>::main(){
 
     }catch(Sentinel & s){//get event and end insert stage
 
-        _Resume Binsertsort<TYPE>::Sentinel() _At left;//pass the event to left routine
+        _Resume Binsertsort<TYPE>::Sentinel() _At less;//pass the event to left routine
 
-        _Resume Binsertsort<TYPE>::Sentinel() _At right;//pass the event to right routine
+        _Resume Binsertsort<TYPE>::Sentinel() _At greater;//pass the event to right routine
 
     }
 
@@ -98,11 +95,11 @@ void Binsertsort<T>::main(){
     try{
         _Enable{
                 for(;;){
-                    if(left.set == 0){//when left was not initialized end current loop
+                    if(less.set == 0){//when left was not initialized end current loop
                         break;
                     }else{
 
-                        value = left.retrieve();//retrieve left node value
+                        value = less.retrieve();//retrieve left node value
                         suspend();
                     }
 
@@ -110,11 +107,11 @@ void Binsertsort<T>::main(){
                 }
         }
     }
-    _CatchResume( Sentinel& s) {
+    _CatchResume( Sentinel&) {
         _Throw Sentinel();
 
     }
-    catch (Sentinel& s ) {
+    catch (Sentinel& ) {
         //do nothing
     }
     //retrieve left done
@@ -125,10 +122,10 @@ void Binsertsort<T>::main(){
         _Enable{
                 suspend();
         }
-    }_CatchResume( Sentinel& s) {
+    }_CatchResume( Sentinel&) {
         _Throw Sentinel();
     }
-    catch ( Sentinel& s ) {
+    catch ( Sentinel& ) {
         //do nothing
     }
 
@@ -136,10 +133,10 @@ void Binsertsort<T>::main(){
     try{
         _Enable{
                 for(;;){
-                    if(right.set == 0){//when right was not initialized end current loop
+                    if(greater.set == 0){//when right was not initialized end current loop
                         break;
                     }else{
-                        value = right.retrieve();//retrieve right node value
+                        value = greater.retrieve();//retrieve right node value
                         suspend();
                     }
 
@@ -150,7 +147,7 @@ void Binsertsort<T>::main(){
     _CatchResume( Sentinel& ) {
         _Throw Sentinel();
     }
-    catch ( Sentinel& s) {
+    catch ( Sentinel& ) {
         //do nothing
     }
 
