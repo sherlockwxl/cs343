@@ -1,4 +1,7 @@
+#ifndef q3cardgame
+#define q3cardgame
 #include <deque>
+#include <iostream>
 using namespace std;
 class PlayInfo{// player info is used to save each play info
 public:
@@ -56,5 +59,4 @@ _Coroutine Player {
     void drink();
 };
 
-unsigned int Player::totalPlayersLeft;
-
+#endif

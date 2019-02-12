@@ -1,0 +1,74 @@
+q4:
+================================================================
+i:
+
+without flag -multi
+1. shared:288014948
+2. shared:267539803
+3. shared:271518853
+4. shared:252045274
+5. shared:256897484
+6. shared:248856160
+7. shared:265130234
+8. shared:245487708
+9. shared:273001051
+10.shared:271593001
+
+
+
+with flag -multi
+1. shared:209563940
+2. shared:203991899
+3. shared:213695135
+4. shared:206300416
+5. shared:242558558
+6. shared:211155383
+7. shared:204314337
+8. shared:209723851
+9. shared:202995220
+10.shared:204298209
+
+
+
+================================================================
+ii:
+The 10 result of 10 runs of each version should not be the same.
+Since tasks share the same memory and switch could happen any time.
+If load/write instructions of one task are replaced by load/write
+instruction of another task(execute before the process value being saved) .
+Then the change of value may got overwritten.
+As the switching could happen any time, the total lost caused by
+switching are not the same every time. So the result should be
+different every time.
+
+================================================================
+iii:
+The smallest value is 2.
+Reason:
+Task 1:                       Task 2:
+load 0
+------------------------------> load 0
+------------------------------> add 0 1
+add 1
+...
+...
+...
+write 19999999
+------------------------------->  write 1
+load 1
+                                    load 1
+                                    ...
+                                    ...
+                                    write 19999999
+
+add 1 1
+write 2
+
+The maximum value is 40000000.
+When no value change was overwritten.
+
+================================================================
+iv:
+The result of program executed on multi-core are significantly smaller than
+executed on single core. It is because when executing on multi cores, the chance of
+value change being overwritten increases. So the total result will be smaller.

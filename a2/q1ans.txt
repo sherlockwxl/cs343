@@ -11,7 +11,9 @@ External Buffer with opt:  5.91s
 ========================================================
 b:
 The external buffer is 5.75s slower than internal buffer
-Reason:
+Reason:The internal buffer uses a fixed length array, which will
+only require one allocation. As for the external buffer, the
+total length is unknown. So multiple allocation will be performed.
 
 
 ========================================================
@@ -19,8 +21,13 @@ c:
 For Internal buffer, transformed program is 0.18 sec faster
 than original program
 For External buffer, transformed program is 4.39 sec faster
-than origianl program
+than original program
 
+The optimization improvement for internal buffer was minimum,
+but for the external buffer is very obvious.
+I think when optimization is enabled, extra buffer space will be allocated
+to avoid potential re-allocation, which will reduce the time that it takes
+to reallocate extra space for external buffer.
 ========================================================
 d:
 
