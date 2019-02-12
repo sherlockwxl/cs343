@@ -45,7 +45,7 @@ _Coroutine Player {
     Player *leftplayer;
     Player *rightplayer;
     unsigned int deckReceived;
-    bool drunk;  //bool is used to stop the event loop 
+    bool drunk;  //bool is used to stop the event loop
     void main();
   public:
     enum { DEATH_DECK_DIVISOR = 7 };
