@@ -1,13 +1,20 @@
 #ifndef q2matrix
 #define q2matrix
 
+#define CFOR 0
+#define TASK 1
+#define ACTOR 2
+
+#ifndef MIMPL
+#define MIMPL  CFOR
+#endif
+
 using namespace std;
-#define type MIMPL
-/*
+
 #if type == TASK
 /*
  * create concurrency using task
-
+ */
 _Task matrixMultiplier{
 
     int **Z;           //result matrix
@@ -24,8 +31,8 @@ public:
 
 
 };
-*/
-//#elif type == CFOR
+
+#elif type == CFOR
 /*
  * create concurrency using cofor
  */
@@ -45,11 +52,11 @@ public:
     matrixMultiplier( int *Z[], int *X[], int *Y[], unsigned int xr, unsigned int xc, unsigned int yc);
 
 };
-/*
+
 #elif type == ACTOR
 /*
  * create concurrency using actor
-
+ */
 _Actor matrixMultiplier{
 
     int **Z;           //result matrix
@@ -68,5 +75,5 @@ public:
 
 
 #endif
-*/
+
 #endif

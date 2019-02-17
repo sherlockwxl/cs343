@@ -5,7 +5,7 @@ TYPE:=int
 SENTINEL:=-1
 
 CXX = u++					# compiler
-CXXFLAGS = -g ${OPT} -Wall -Wextra -MMD -std=c++14 -D"${MIMPL}" -D"${BIMPL}" \
+CXXFLAGS = -g ${OPT} -Wall -Wextra -MMD -std=c++14 -DMIMPL="${MIMPL}" -D"${BIMPL}" \
 		   -DTYPE="${TYPE}" -DSENTINEL="${SENTINEL}" # compiler flags
 MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}	# makefile name
 

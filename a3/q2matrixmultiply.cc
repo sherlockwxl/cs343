@@ -5,21 +5,25 @@
 #include <uCobegin.h>
 #include "q2matrixmultiply.h"
 
+
+
+
 using namespace std;
+
 matrixMultiplier::matrixMultiplier(int *Z[], int *X[], int *Y[], unsigned int xr, unsigned int xc, unsigned int yc):
         Z(Z), X(X),  Y(Y), xr(xr), xcyr(xc), yc(yc){calculate();}
 
 
 
 
-//#if type == TASK
+#if MIMPL == TASK
 
-//#elif type == CFOR
+#elif MIMPL == CFOR
 /*
  * create concurrency using cofor
  */
 void matrixMultiplier::calculate(){
-    cout <<" main called "<<endl;
+    cout <<" main called "<< MIMPL <<endl;
     int totalcount = xr * yc;
 
     COFOR( i, 0, totalcount,
@@ -40,7 +44,7 @@ void matrixMultiplier::calculate(){
 
 
 
-//#elif type == ACTOR
+#elif MIMPL == ACTOR
+#endif
 
-//#endif
 
