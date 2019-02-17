@@ -1,20 +1,25 @@
 //
 // Created by xilingwu on 2/15/19.
 //
+#include <iostream>
+#include <uCobegin.h>
 #include "q2matrixmultiply.h"
 
+using namespace std;
+matrixMultiplier::matrixMultiplier(int *Z[], int *X[], int *Y[], unsigned int xr, unsigned int xc, unsigned int yc):
+        Z(Z), X(X),  Y(Y), xr(xr), xcyr(xc), yc(yc){calculate();}
 
-#define type MIMPL
-matrixMultiplier::matrixMultiplier(int *Z[], int *X[], unsigned int xr, unsigned int xc, int *Y[], unsigned int yc):
-    Z(Z), X(X), xr(xr), xcyr(xc), Y(Y), yc(yc){}
 
-#if type == TASK
 
-#elif type == CFOR
+
+//#if type == TASK
+
+//#elif type == CFOR
 /*
  * create concurrency using cofor
  */
-void matrixMultiplier::main(){
+void matrixMultiplier::calculate(){
+    cout <<" main called "<<endl;
     int totalcount = xr * yc;
 
     COFOR( i, 0, totalcount,
@@ -24,7 +29,7 @@ void matrixMultiplier::main(){
     // for ( int i = 0; i < totalcount; r += 1 )
     Z[row][col] = 0;
 
-    for ( int index = 0; index < xc; index += 1 )
+    for ( int index = 0; index < xcyr; index += 1 )
         Z[row][col] += X[row][index] * Y[index][col];
     ); // wait for threads
 
@@ -35,7 +40,7 @@ void matrixMultiplier::main(){
 
 
 
-#elif type == ACTOR
+//#elif type == ACTOR
 
-#endif
+//#endif
 

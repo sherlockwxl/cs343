@@ -9,7 +9,7 @@ CXXFLAGS = -g ${OPT} -Wall -Wextra -MMD -std=c++14 -D"${MIMPL}" -D"${BIMPL}" \
 		   -DTYPE="${TYPE}" -DSENTINEL="${SENTINEL}" # compiler flags
 MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}	# makefile name
 
-OBJECTS1 = # object files forming 1st executable with prefix "q2"
+OBJECTS1 = q2matrixmultiply.o q2main.o
 EXEC1 = matrixmultiply				# 1st executable name
 
 OBJECTS2 = # object files forming 2nd executable with prefix "q3"
