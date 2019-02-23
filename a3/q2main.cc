@@ -44,22 +44,22 @@ void printresult(int *Xmatrix[], int *Ymatrix[], int *Zmatrix[], int xr, int xcy
         for(int j = 0 ; j < xcyr; j++){
             cout<<"        ";
         }
-        cout<<"    |";
+        cout<<"   | ";
         //print matrix Y
         for(int z = 0; z < yc; z++){
-            cout<<setw(10)<<Ymatrix[i][z];
+            cout<<setw(8)<<Ymatrix[i][z];
         }
         cout<<endl;
     }
 
     //print the splitter line
 
-    for(int i = 0 ; i < xcyr * 9 + 3; i++){
+    for(int i = 0 ; i < xcyr * 8 + 3; i++){
         cout<<"-";
     }
 
     cout<<"*";
-    for(int i = 0 ; i < xcyr * 9 + 1; i++){
+    for(int i = 0 ; i < yc * 8 + 1; i++){
         cout<<"-";
     }
     cout<<endl;
@@ -68,12 +68,12 @@ void printresult(int *Xmatrix[], int *Ymatrix[], int *Zmatrix[], int xr, int xcy
     for(int i = 0 ; i < xr; i++){
         //print i row in X
         for(int j = 0 ; j < xcyr; j++){
-            cout<<setw(10)<<Xmatrix[i][j];
+            cout<<setw(8)<<Xmatrix[i][j];
         }
-        cout<<"    |";
+        cout<<"   | ";
         //print matrix Z
         for(int z = 0; z < yc; z++){
-            cout<<setw(10)<<Zmatrix[i][z];
+            cout<<setw(8)<<Zmatrix[i][z];
         }
         cout<<endl;
     }
@@ -81,7 +81,7 @@ void printresult(int *Xmatrix[], int *Ymatrix[], int *Zmatrix[], int xr, int xcy
 
 //interface for 3 different implementations, the interface will ini the task/actor/class
 void matrixmultiply( int *Z[], int *X[], unsigned int xr, unsigned int xc, int *Y[], unsigned int yc ){
-    cout<<"ini called"<<endl;
+    cout<<"ini called x row: "<< xr << "xcyr : "<< xc << "y col: " << yc<<endl;
     matrixMultiplier M(Z, X, Y, xr, xc, yc);
 }
 
@@ -124,7 +124,7 @@ int main( int argc, char * argv[] ) {
                 yc = stoi( argv[3] ); if ( yc < 1) throw 1;
 
             case 3:
-                xcyr = stoi( argv[1] ); if ( xcyr < 1) throw 1;
+                xcyr = stoi( argv[2] ); if ( xcyr < 1) throw 1;
 
             case 2:
                 xr = stoi( argv[1] ); if ( xr < 1) throw 1;
@@ -173,5 +173,9 @@ int main( int argc, char * argv[] ) {
         delete Y[i];
     }
 
+    if(printmode == true){
+        delete xmatrix;
+        delete ymatrix;
+    }
 
 }
