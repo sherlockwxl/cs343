@@ -81,8 +81,16 @@ void printresult(int *Xmatrix[], int *Ymatrix[], int *Zmatrix[], int xr, int xcy
 
 //interface for 3 different implementations, the interface will ini the task/actor/class
 void matrixmultiply( int *Z[], int *X[], unsigned int xr, unsigned int xc, int *Y[], unsigned int yc ){
-    cout<<"ini called x row: "<< xr << "xcyr : "<< xc << "y col: " << yc<<endl;
+    //cout<<"ini called x row: "<< xr << "xcyr : "<< xc << "y col: " << yc<<endl;
+#if MIMPL == TASK
+    matrixMultiplier M(Z, X, Y, xr, xc, yc, 0, xr - 1);
+
+#elif MIMPL == CFOR
     matrixMultiplier M(Z, X, Y, xr, xc, yc);
+
+#elif MIMPL == ACTOR
+
+#endif
 }
 
 
