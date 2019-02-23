@@ -80,21 +80,25 @@ _Actor matrixMultiplier{
     int **Y;          //input matrix y
     int xcyr;      //col number of xc/xcyr
     int yc;        //col number of Y
+
     Allocation receive(Message & msg){
-    Z = msg->Z;
-    X = msg->X;
-    Y = msg->Y;
-    xcyr = msg->xcyr;
-    yc = msg->yc;
-    for(int i = 0; i < xcyr; i++){
-        for(int j = 0 ; j < yc; j++){
-            Z[j] += X[i] * Y[i][j];
+        Case( multiplierMsg, msg){
+            Z = msg_d->Z;
+            X = msg_d->X;
+            Y = msg_d->Y;
+            xcyr = msg_d->xcyr;
+            yc = msg_d->yc;
+            for(int i = 0; i < xcyr; i++){
+                for(int j = 0 ; j < yc; j++){
+                    Z[j] += X[i] * Y[i][j];
+                }
+            }
+        } else Case( StopMsg, msg){
+
         }
+        return Delete;
     }
 
-
-    return Delete;
-}
 
 
 public:
