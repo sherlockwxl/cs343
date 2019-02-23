@@ -89,7 +89,10 @@ void matrixmultiply( int *Z[], int *X[], unsigned int xr, unsigned int xc, int *
     matrixMultiplier M(Z, X, Y, xr, xc, yc);
 
 #elif MIMPL == ACTOR
-
+    for(int i = 0; i < xr; i++){
+        *(new matrixMultiplier())|| *new multiplierMsg(Z[i], X[i], Y, xcyr, yc);
+    }
+    uActor::stop();
 #endif
 }
 

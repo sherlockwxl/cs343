@@ -58,14 +58,16 @@ public:
 };
 
 #elif MIMPL == ACTOR
+#include <uActor.h>
 //customize message struct
 struct multiplierMsg:public uActor::Message{
     int *Z;        //only access one row of Z in each actor
     int *X;        //only access one row of X in each actor
     int **Y;       //only access one col of Y in each actor
-
-    multiplierMsg(int *Z, int *X, int *Y[]) : Message(uActor:Delete),
-    Z(Z), X(X), Y(Y){};
+    int xcyr;      //col number of xc/xcyr
+    int yc;        //col number of Y
+    multiplierMsg(int *Z, int *X, int *Y[], int xcyr, int yc) : Message(uActor::Delete),
+    Z(Z), X(X), Y(Y), xcyr(xcyr), yc(yc){};
 
 };
 /*
@@ -75,12 +77,28 @@ _Actor matrixMultiplier{
 
     int *Z;           //result matrix
     int *X;           //input matrix x
-    int **Y;           //input matrix y
-    Allocation receive( Message & );
+    int **Y;          //input matrix y
+    int xcyr;      //col number of xc/xcyr
+    int yc;        //col number of Y
+    Allocation receive(Message & msg){
+    Z = msg->Z;
+    X = msg->X;
+    Y = msg->Y;
+    xcyr = msg->xcyr;
+    yc = msg->yc;
+    for(int i = 0; i < xcyr; i++){
+        for(int j = 0 ; j < yc; j++){
+            Z[j] += X[i] * Y[i][j];
+        }
+    }
+
+
+    return Delete;
+}
 
 
 public:
-    matrixMultiplier(){};
+    //matrixMultiplier(){};
 
 };
 
