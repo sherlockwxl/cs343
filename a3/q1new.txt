@@ -1,0 +1,36 @@
+Assignment 2 - q1
+
+a)
+-DINTERNAL
+2.58u 0.91s 0:03.50
+
+-DEXTERNAL
+18.28u 0.88s 0:19.20
+
+-DINTERNAL -O2
+2.34u 0.80s 0:03.17
+
+-DEXTERNAL -O2
+3.89u 0.75s 0:04.68
+
+b)
+Buffering with internal-data format is significantly faster than external-data format by 16.70s. The char array knows the size of its content, therefore there will be only one allocation for each iteration. On the hand, the string version does no know the size and every time size exceed than allocated space, it needs to re-allocate and copy the data.
+
+c)
+Difference for internal-data format is very minimum but for external-data format, it is 14.39s faster.
+
+The compiler optimization may understand the code and help the string to allocate enough space (or more space) for each iteration thus there will be less re-allocation and copy operations.
+
+
+d)
+-DINTERNAL
+2.12u 0.22s 0:02.34
+
+-DEXTERNAL
+17.28u 0.22s 0:17.55
+
+-DINTERNAL -O2
+1.92u 0.17s 0:02.12
+
+-DEXTERNAL -O2
+3.32u 0.18s 0:03.52
