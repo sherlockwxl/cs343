@@ -1,17 +1,11 @@
 #ifndef q2matrix
 #define q2matrix
 
-#define CFOR 0
-#define TASK 1
-#define ACTOR 2
 
-#ifndef MIMPL
-#define MIMPL  CFOR
-#endif
 
 using namespace std;
 
-#if MIMPL == TASK
+#if defined(TASK)
 /*
  * create concurrency using task
  */
@@ -34,7 +28,10 @@ public:
 
 };
 
-#elif MIMPL == CFOR
+
+#endif
+
+#if defined(CFOR)
 /*
  * create concurrency using cofor
  */
@@ -56,7 +53,11 @@ public:
 
 };
 
-#elif MIMPL == ACTOR
+
+#endif
+
+
+#if defined(ACTOR)
 #include <uActor.h>
 //customize message struct
 struct multiplierMsg:public uActor::Message{
@@ -108,5 +109,6 @@ public:
 
 
 #endif
+
 
 #endif

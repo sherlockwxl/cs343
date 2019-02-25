@@ -82,15 +82,19 @@ void printresult(int *Xmatrix[], int *Ymatrix[], int *Zmatrix[], int xr, int xcy
 //interface for 3 different implementations, the interface will ini the task/actor/class
 void matrixmultiply( int *Z[], int *X[], unsigned int xr, unsigned int xc, int *Y[], unsigned int yc ){
 
-#if MIMPL == TASK
+#if defined(TASK)
     matrixMultiplier M(Z, X, Y, xr, xc, yc, 0, xr - 1);
+#endif
 
-#elif MIMPL == CFOR
+#if defined(CFOR)
     matrixMultiplier M(Z, X, Y, xr, xc, yc);
+#endif
 
-#elif MIMPL == ACTOR
+
+#if defined(ACTOR)
+
     uActorStart();    // call uactor start first
-    for(int i = 0; i < xr; i++){
+    for(unsigned int i = 0; i < xr; i++){
         *(new matrixMultiplier())| *new multiplierMsg(Z[i], X[i], Y, xc, yc);
     }
     uActor::stop();   // wait for all actor to stop
@@ -117,12 +121,20 @@ int main( int argc, char * argv[] ) {
         }
         switch ( argc ) {
             case 6:
+                printmode = true;
                 try {                   // open input file
                     ymatrix = new ifstream( argv[5] );   // open input yfile
-                    xmatrix = new ifstream( argv[4] );   // open input xfile
-                    printmode = true;
+
                 } catch( uFile::Failure & ) {
-                    cerr << "Error! Could not open input file for x or y matrix \"" << argv[5] << " " << argv[6] << "\"" << endl;
+                    cerr << "Error! Cannot open y-matrix input-file \"" << argv[5]  << "\"" << endl;
+                    throw 1;
+                } // try
+
+                try {                   // open input file
+                    xmatrix = new ifstream( argv[4] );   // open input xfile
+
+                } catch( uFile::Failure & ) {
+                    cerr << "Error! Cannot open x-matrix input-file \"" << argv[4] << "\"" << endl;
                     throw 1;
                 } // try
 
@@ -144,7 +156,7 @@ int main( int argc, char * argv[] ) {
             default: throw 1;
         } // switch
     } catch( ... ) {
-        cerr << "Usage: " << argv[0] << " Usage: ./matrixmultiplyCFOR xrows (> 0) xycols (> 0) ycols (> 0)"
+        cerr << "Usage: " << argv[0] << " xrows (> 0) xycols (> 0) ycols (> 0)"
                                         "[ processors (> 0) | x-matrix-file  y-matrix-file ]"<< endl;
         exit( EXIT_FAILURE );
     } // try
@@ -162,14 +174,18 @@ int main( int argc, char * argv[] ) {
     createMatrix(Y, xcyr, yc);
     createMatrix(Z, xr, yc);
 
+    //cout<<"create done"<<endl;
     //now we load the given file/37 into the x and y matirx;
     loadMatrix(X, xr, xcyr, xmatrix);
     loadMatrix(Y, xcyr, yc, ymatrix);
 
+
+    //cout<<"load done"<<endl;
     //do the matrix multiply
     matrixmultiply(Z, X, xr, xcyr, Y, yc);
 
 
+    //cout<<"cal done"<<endl;
     //if x/y file is provided print the result
     if(printmode){
         printresult(X, Y, Z, xr, xcyr, yc);

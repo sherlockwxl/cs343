@@ -5,8 +5,8 @@ TYPE:=int
 SENTINEL:=-1
 
 CXX = u++					# compiler
-CXXFLAGS = -g ${OPT} -Wall -Wextra -MMD -std=c++14 -DMIMPL="${MIMPL}" -DBIMPL="${BIMPL}" \
-		   -DTYPE="${TYPE}" -DSENTINEL="${SENTINEL}" # compiler flags
+CXXFLAGS = -g ${OPT} -Wall -Wextra -MMD -std=c++14 -D"${MIMPL}" -D"${BIMPL}" \
+		   -DTYPE="${TYPE}" -DSENTINEL="${SENTINEL}" -multi # compiler flags
 MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}	# makefile name
 
 OBJECTS1 = q2matrixmultiply.o q2main.o

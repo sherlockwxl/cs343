@@ -9,13 +9,7 @@
 #include "q3buffer.h"
 using namespace std;
 
-#define NOBUSY 0
-#define BUSY 1
 
-
-#ifndef BIMPL
-#define BIMPL  BUSY
-#endif
 
 template<typename T> class BoundedBuffer {
 
@@ -25,7 +19,7 @@ template<typename T> class BoundedBuffer {
     const unsigned int maxSize;                            // buffer size limit
     queue<T> buffer;                                       // buffer store queue(for easy pop and push operation)
 
-#if BIMPL == NOBUSY
+#if defined(NOBUSY)
     bool avail = true;                                     // conditional variable for no busy waiting
     uCondLock bargeLock;                                   // lock for barging
 #endif
