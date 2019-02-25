@@ -49,7 +49,6 @@ class matrixMultiplier{
     unsigned int xcyr;  //col number of x/ row number of y
     unsigned int yc;    //col number of y
 
-    //void main();
     void calculate();
 
 public:
@@ -78,16 +77,17 @@ _Actor matrixMultiplier{
     int *Z;           //result matrix
     int *X;           //input matrix x
     int **Y;          //input matrix y
-    int xcyr;      //col number of xc/xcyr
-    int yc;        //col number of Y
+    int xcyr;         //col number of xc/xcyr
+    int yc;           //col number of Y
 
-    Allocation receive(Message & msg){
+    Allocation receive(Message & msg){  // msg handler
         Case( multiplierMsg, msg){
-            Z = msg_d->Z;
+            Z = msg_d->Z;               // first load variables from the msg to loacl variables
             X = msg_d->X;
             Y = msg_d->Y;
             xcyr = msg_d->xcyr;
             yc = msg_d->yc;
+            // perform calculation
             for(int i = 0; i < xcyr; i++){
                 for(int j = 0 ; j < yc; j++){
                     Z[j] += X[i] * Y[i][j];
@@ -102,7 +102,7 @@ _Actor matrixMultiplier{
 
 
 public:
-    //matrixMultiplier(){};
+    matrixMultiplier(){};
 
 };
 

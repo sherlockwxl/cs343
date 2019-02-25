@@ -81,7 +81,7 @@ void printresult(int *Xmatrix[], int *Ymatrix[], int *Zmatrix[], int xr, int xcy
 
 //interface for 3 different implementations, the interface will ini the task/actor/class
 void matrixmultiply( int *Z[], int *X[], unsigned int xr, unsigned int xc, int *Y[], unsigned int yc ){
-    //cout<<"ini called x row: "<< xr << "xcyr : "<< xc << "y col: " << yc<<endl;
+
 #if MIMPL == TASK
     matrixMultiplier M(Z, X, Y, xr, xc, yc, 0, xr - 1);
 
@@ -89,11 +89,11 @@ void matrixmultiply( int *Z[], int *X[], unsigned int xr, unsigned int xc, int *
     matrixMultiplier M(Z, X, Y, xr, xc, yc);
 
 #elif MIMPL == ACTOR
-    uActorStart();
+    uActorStart();    // call uactor start first
     for(int i = 0; i < xr; i++){
         *(new matrixMultiplier())| *new multiplierMsg(Z[i], X[i], Y, xc, yc);
     }
-    uActor::stop();
+    uActor::stop();   // wait for all actor to stop
 #endif
 }
 
@@ -118,8 +118,8 @@ int main( int argc, char * argv[] ) {
         switch ( argc ) {
             case 6:
                 try {                   // open input file
-                    ymatrix = new ifstream( argv[5] );   // open input file
-                    xmatrix = new ifstream( argv[4] );
+                    ymatrix = new ifstream( argv[5] );   // open input yfile
+                    xmatrix = new ifstream( argv[4] );   // open input xfile
                     printmode = true;
                 } catch( uFile::Failure & ) {
                     cerr << "Error! Could not open input file for x or y matrix \"" << argv[5] << " " << argv[6] << "\"" << endl;
