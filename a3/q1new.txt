@@ -1,36 +1,32 @@
-Assignment 2 - q1
+q1
 
-a)
--DINTERNAL
-2.58u 0.91s 0:03.50
+a:
+=======================================================================================================================
 
--DEXTERNAL
-18.28u 0.88s 0:19.20
+*Note: For vector2 I used 10000000 as time since it takes too long to finish.
 
--DINTERNAL -O2
-2.34u 0.80s 0:03.17
+Task number:          1 (time: 20000000)*    2 (time: 20000000)*    4 (time: 20000000)*
 
--DEXTERNAL -O2
-3.89u 0.75s 0:04.68
+DARRAY                1.82u  0:01.82         26.89u  0:13.50        98.38u  0:24.89
+VECTOR1               2.49u  0:02.50         18.53u  0:09.30        128.69u 0:32.92
+VECTOR2               6.25u  0:06.25         97.16u  0:48.77        311.95u 1:18.12
+STACK                 1.21u  0:01.20         2.39u   0:01.24        4.69u   0:01.24
 
-b)
-Buffering with internal-data format is significantly faster than external-data format by 16.70s. The char array knows the size of its content, therefore there will be only one allocation for each iteration. On the hand, the string version does no know the size and every time size exceed than allocated space, it needs to re-allocate and copy the data.
+=======================================================================================================================
 
-c)
-Difference for internal-data format is very minimum but for external-data format, it is 14.39s faster.
+b:
 
-The compiler optimization may understand the code and help the string to allocate enough space (or more space) for each iteration thus there will be less re-allocation and copy operations.
+*Note: For vector2 I used 10000000 as time since it takes too long to finish.
+
+Task number:          1 (time: 20000000)    2 (time: 20000000)              4 (time: 20000000)
+
+DARRAY                1.82u  0:01.82        +25.07u +1377%  +11.68  +641%   +71.49u  +265%  +11.39 +84%
+VECTOR1               2.49u  0:02.50        +16.04u +644%   +6.8    +272%   +110.16u +594%  +23.62 +253%
+VECTOR2               6.25u  0:06.25        +90.9u  +1454%  +42.52  +680%   +214.79u +221%  +29.35 +60%
+STACK                 1.21u  0:01.20        +1.18u  +97%    +0.04   +3%     +2.57u   +107%  +0     +0%
+
+=======================================================================================================================
+
+c:
 
 
-d)
--DINTERNAL
-2.12u 0.22s 0:02.34
-
--DEXTERNAL
-17.28u 0.22s 0:17.55
-
--DINTERNAL -O2
-1.92u 0.17s 0:02.12
-
--DEXTERNAL -O2
-3.32u 0.18s 0:03.52

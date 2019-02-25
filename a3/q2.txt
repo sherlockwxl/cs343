@@ -28,7 +28,7 @@ ACTOR:               0:12.07r         -0:03.54r (-29%) -0:03.45r (-40%) -0:02.65
 
 
 iii:
-
+(Comparision based on COFOR time)
 The Actor has best performance and COFOR is the slowest when Processor number is small and using Task become slower
 than COFOR when Processor number is more than 4.
 
@@ -45,6 +45,9 @@ ACTOR:              | -0:47.21r (-79%) | -0:14.38r (-62%) | -0:06.48r (-56%) | -
 
 c:
 
+With optimization
+
+
 Processor number:    1                2                4                8                16
 
 COFOR:               0:10.01r         0:05.16r         0:02.61r         0:01.76r         0:01.02r
@@ -56,7 +59,7 @@ ACTOR:               0:02.60r         0:01.33r         0:00.86r         0:00.65r
 
 ii:
 
-All three implementations had better performance. (Comparing with no compilation)
+All three implementations had better performance. (Comparing each with no optimization)
 
 Processor number:    1                 2                 4                 8                1 6
 
@@ -69,7 +72,7 @@ ACTOR:               -0:09.47r (-78%)  -0:07.20r (-84%)  -0:04.22r (-83%)  -0:01
 
 iii:
 
-The Actor still has best performance and COFOR and TASK has similar performance
+The Actor still has best performance and COFOR and TASK has similar performance (Comparision based on COFOR time)
 
 Processor number:   | 1                | 2                | 4                | 8                | 16
 

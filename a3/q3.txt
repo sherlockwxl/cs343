@@ -1,0 +1,70 @@
+q3
+
+b:
+=======================================================================================================================
+
+i:
+
+arguments: 60 65 10000 30 10
+
+            No optimization      With optimization
+NOBUSY:     1.56u                1.42u
+BUSY:       1.32u                1.18u
+
+=======================================================================================================================
+
+ii:
+
+1. Implementation with busy waiting are always faster than no busy waiting
+    without optimization: -0.24u  -15%
+    with optimization:    -0.24u  -16%
+2. Optimized program always run faster comparing with not optimized program for both implementations
+    For Nobusy:           -0.14u  -8%
+    For Busy:             -0.14u  -10%
+
+=======================================================================================================================
+
+iii:
+-MULTI
+arguments: 60 65 10000 30 10
+
+            No optimization      With optimization
+NOBUSY:     44.63u                40.50u
+BUSY:       38.48u                32.63u
+
+=======================================================================================================================
+
+iv:
+
+1. Implementation with busy waiting are always faster than no busy waiting
+    without optimization: -6.15u  -13%
+    with optimization:    -7.87u  -19%
+2. Optimized program always run faster comparing with not optimized program for both implementations
+    For Nobusy:           -4.13u  -9%
+    For Busy:             -5.85u  -15%
+
+=======================================================================================================================
+
+v:
+
+Under all scenarios, Busy waiting implementation is faster than no busy waiting implementation.
+Possible reasons:
+    1. One extra conditional lock in the no busy waiting implementation, may lead to extra wait and signal time
+    2. We prevented barging in no busy waiting implementation, which add extra scheduling time, and in the busy
+       waiting implementation, we guaranteed that one thread will take over the work as soon as its available.
+    3. Since more scheduling happens in the no busy waiting implementation, more context switch will happens.
+
+=======================================================================================================================
+
+vi:
+
+Under all scenarios, multiprocessor executions are way slower than uniprocessor executions.
+Possible reasons:
+    1. When we are using multiprocessor, the lock acquire will happen more frequently. As all processor will try
+       to acquire same lock, the chance that a thread will need to wait for ownerlock/conditional lock will increase.
+       So it will lead to more execution time.
+    2. As we are using multiprocessor, the context switch will happen more frequently, As it happens randomly, it will
+       take more time to finish the process that is holding the lock, will means more threads will be waiting for
+       longer time. This will also lead to longer execution time.
+
+=======================================================================================================================
