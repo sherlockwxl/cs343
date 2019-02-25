@@ -7,16 +7,14 @@
 #include "MPRNG.h"
 using namespace std;
 
-#ifndef  SENTINEL
-#define SENTINEL -1
-#endif
+
 
 
 MPRNG *mprng;
 
 
 //BoundedBuffer implementation for no busy waiting
-#if BIMPL == NOBUSY
+#if defined(NOBUSY)
 template<typename T>
 BoundedBuffer<T>::BoundedBuffer(const unsigned int size):
         maxSize(size){};
@@ -106,7 +104,7 @@ T BoundedBuffer<T>::remove() {
 
 
 //BoundedBuffer implementation for busy waiting
-#if BIMPL == BUSY
+#if defined(BUSY)
 template<typename T>
 BoundedBuffer<T>::BoundedBuffer(const unsigned int size):
         maxSize(size){};

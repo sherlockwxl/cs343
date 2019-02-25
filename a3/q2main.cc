@@ -108,8 +108,8 @@ int main( int argc, char * argv[] ) {
 
 
     //set up default and ini variables
-    istream * xmatrix;
-    istream * ymatrix;
+    istream * xmatrix = NULL;
+    istream * ymatrix = NULL;
     int processors = 1;
     int xr;
     int xcyr;
