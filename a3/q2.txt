@@ -16,7 +16,7 @@ ACTOR:               0:12.07r         0:08.53r         0:05.08r         0:02.43r
 
 ii:
 
-As the kernel threads increase, real time of all 3 implementations decrease.
+As the kernel threads increase, real time of all 3 implementations decrease.(On average linear relationship)
 
 Processor number:    1                2                4                8                16
 
@@ -25,6 +25,7 @@ COFOR:               0:59.28r         -0:36.37r (-61%) -0:11.35r (-49%) -0:05.48
 TASK:                0:42.37r         -0:21.95r (-51%) -0:06.69r (-32%) -0:06.50r (-47%) -0:01.90r (-26%)
 ---------------------------------------------------------------------------------------------------------
 ACTOR:               0:12.07r         -0:03.54r (-29%) -0:03.45r (-40%) -0:02.65r (-52%) -0:01.11r (-45%)
+
 
 
 iii:

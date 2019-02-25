@@ -31,8 +31,8 @@ STACK                 1.21u  0:01.20        +1.18u  +97%    +0.04   +3%     +2.5
 c:
 
 Stack always has the best performance. The user time doubles as the task number double but the real time remains the
-same since the user time is relatively small. The stack approach do not require dynamic allocation and it always run
-faster than other approach.
+same since the user time is relatively small. The stack approach do not require dynamic allocation and it always use
+the stack so it always run faster than other approach.
 
 The vector1 is always faster than vector2 because the size is given when we allocate space in the vector1. As for
 the vector2, the vector size increase while we push back element, which means there will be multiple time that the

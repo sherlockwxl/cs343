@@ -83,11 +83,15 @@ void printresult(int *Xmatrix[], int *Ymatrix[], int *Zmatrix[], int xr, int xcy
 void matrixmultiply( int *Z[], int *X[], unsigned int xr, unsigned int xc, int *Y[], unsigned int yc ){
 
 #if defined(TASK)
+
     matrixMultiplier M(Z, X, Y, xr, xc, yc, 0, xr - 1);
+
 #endif
 
 #if defined(CFOR)
+
     matrixMultiplier M(Z, X, Y, xr, xc, yc);
+
 #endif
 
 
@@ -98,6 +102,7 @@ void matrixmultiply( int *Z[], int *X[], unsigned int xr, unsigned int xc, int *
         *(new matrixMultiplier())| *new multiplierMsg(Z[i], X[i], Y, xc, yc);
     }
     uActor::stop();   // wait for all actor to stop
+
 #endif
 }
 
@@ -174,18 +179,13 @@ int main( int argc, char * argv[] ) {
     createMatrix(Y, xcyr, yc);
     createMatrix(Z, xr, yc);
 
-    //cout<<"create done"<<endl;
     //now we load the given file/37 into the x and y matirx;
     loadMatrix(X, xr, xcyr, xmatrix);
     loadMatrix(Y, xcyr, yc, ymatrix);
 
-
-    //cout<<"load done"<<endl;
     //do the matrix multiply
     matrixmultiply(Z, X, xr, xcyr, Y, yc);
 
-
-    //cout<<"cal done"<<endl;
     //if x/y file is provided print the result
     if(printmode){
         printresult(X, Y, Z, xr, xcyr, yc);

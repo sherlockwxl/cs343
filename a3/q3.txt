@@ -1,5 +1,15 @@
 q3
 
+a:
+=======================================================================================================================
+
+iii:
+If we use barging prevention, which means we need to hold the barging lock between releasing and unblocking task,
+if context switch happens and producer wait on full lock and do not release the barging lock, consumer wait on barging
+lock, there will be a dead lock, the execution will halt.
+
+=======================================================================================================================
+
 b:
 =======================================================================================================================
 
@@ -51,8 +61,9 @@ Under all scenarios, Busy waiting implementation is faster than no busy waiting 
 Possible reasons:
     1. One extra conditional lock in the no busy waiting implementation, may lead to extra wait and signal time
     2. We prevented barging in no busy waiting implementation, which add extra scheduling time, and in the busy
-       waiting implementation, we guaranteed that one thread will take over the work as soon as its available.
-    3. Since more scheduling happens in the no busy waiting implementation, more context switch will happens.
+       waiting implementation, we guaranteed that there will beone thread will take over the work as soon as
+       its available.
+    3. Since more scheduling happens in the no busy waiting implementation, more context switch will happen.
 
 =======================================================================================================================
 

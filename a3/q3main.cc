@@ -123,14 +123,14 @@ void BoundedBuffer<T>::insert(T elem) {
 
 template<typename T>
 T BoundedBuffer<T>::remove() {
-    ownerLock.acquire();           // acquire ownerlock
-    while (buffer.size() == 0){    // busy waiting for insert done when no element in the buffer
-        emptyLock.wait(ownerLock); // wait for insert done
+    ownerLock.acquire();              // acquire ownerlock
+    while (buffer.size() == 0){       // busy waiting for insert done when no element in the buffer
+        emptyLock.wait(ownerLock);    // wait for insert done
     }
-    T res = buffer.front();        // get the first element in the buffer
-    buffer.pop();                  // remove the first element from the buffer
-    fullLock.signal();             // release the full lock, since we already removed at least one elemnt
-    ownerLock.release();           // release the owner lock.
+    T res = buffer.front();           // get the first element in the buffer
+    buffer.pop();                     // remove the first element from the buffer
+    fullLock.signal();                // release the full lock, since we already removed at least one elemnt
+    ownerLock.release();              // release the owner lock.
 
     return res;
 }
