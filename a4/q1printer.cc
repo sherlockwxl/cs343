@@ -44,11 +44,6 @@ void Printer::flush(){
             buffer[i].set = false;                //reset the flag
             cout << (char)buffer[i].state;
             switch(buffer[i].state){
-                case Voter::States::Start:
-                case Voter::States::barging:
-                case Voter::States::Complete:
-                case Voter::States::Failed:
-                case Voter::States::Terminated:
                 case Voter::States::Vote:
                     cout << " " << buffer[i].ballot.picture << "," << buffer[i].ballot.statue<<
                     ","<< buffer[i].ballot.giftshop;
