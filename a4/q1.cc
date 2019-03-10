@@ -1,3 +1,10 @@
+#include "q1voter.h"
+#include "q1tallyVotes.h"
+#include "q1printer.h"
+#include "MPRNG.h"
+using namespace std;
+MPRNG mprng;
+
 int main( int argc, char * argv[] ) {
 
 
@@ -9,7 +16,7 @@ int main( int argc, char * argv[] ) {
     int voters = 6;
 
     //create random number generator
-    prng = new PRNG(seed);
+    mprng = new PRNG(seed);
 
     try {                                               // process command-line arguments
         switch ( argc ) {
@@ -41,46 +48,26 @@ int main( int argc, char * argv[] ) {
     uProcessor p[processors - 1]; // number of kernel threads
     prng->seed(seed);//set up seed
 
+    // create printer
+    Printer printer(voters);
+    // create tallyvoter
+    TallyVotes tv(voter, group, printer);
+    // create list of voters;
+    Voter * voterlist[voters];
 
-    for(int i = 0 ; i < games; i++ ){//loop each game
-
-        if(!playersset){//if players number not provided, random players amount for each game
-            players = (*prng)(2,10);
-        }
-
-        if(!cardsset){//if cards number not provided, random card amount for each game
-            cards = (*prng)(10,200);
-        }
-
-
-
-        int startindex = (*prng)(players - 1);
-
-
-        //start game;
-        Printer printer(players, cards);
-        Player::players(players);//ini total player number
-        Player* playerarr[players];
-        for(unsigned int j = 0; j < players; j++){
-            playerarr[j] = new Player(printer, j);//ini each player
-        }
-
-        for(unsigned int j = 0; j < players; j++){
-            playerarr[j]->start(*playerarr[(j + players - 1)%players], *playerarr[(j + 1)%players]);//link left and right players
-        }
-
-
-        playerarr[startindex]->play(cards);
-        for(unsigned int j = 0; j < players; j++){
-            delete playerarr[j];//delete each player
-        }
-        if(i != games - 1){
-            cout<<endl<<endl;
-        }
-
+    for( int i = 0 ; i < voters; i++){
+        voterlist[i] = new Voter(i, votes, tv, printer);
     }
 
-    delete prng;
+    // all done remove voter;
+
+    for( int i = 0 ; i < voters; i++){
+        delete voterlist[i];
+    }
+
+    delete mprng;
+
+
 
 
 }
