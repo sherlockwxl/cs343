@@ -1,7 +1,12 @@
 #if defined( MC )                    // mutex/condition solution
 // includes for this kind of vote-tallier
 class TallyVotes {
-    // private declarations for this kind of vote-tallier
+    bool bargingFlag;
+    uOwnerLock ownerLock;            //
+    uCondLock waitForGroup;
+    uCondLock bargingLock;
+    unsigned int numBlocked;
+    // private declarations for this  kind of vote-tallier
 #elif defined( SEM )                // semaphore solution
 // includes for this kind of vote-tallier
 class TallyVotes {
@@ -18,6 +23,12 @@ _Cormonitor TallyVotes : public uBarrier {
     unsigned int voters;
     unsigned int group;
     Printer & printer;
+
+    unsigned int groupnumber;
+    Ballot currentBallot;
+    unsigned int voted;
+    unsigned int voterLeft;
+
 public:                            // common interface
     _Event Failed {};
     TallyVotes( unsigned int voters, unsigned int group, Printer & printer );

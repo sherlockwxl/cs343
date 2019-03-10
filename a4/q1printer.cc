@@ -54,6 +54,8 @@ void Printer::flush(){
                     break;
                 case Voter::States::Finished:
                     cout << " "<< buffer[i].tour.tourkind << " " << buffer[i].tour.groupno;
+                default:
+                    break;
 
             }// end switch
             cout << "\t";
