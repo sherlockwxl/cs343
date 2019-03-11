@@ -10,19 +10,32 @@ using namespace std;
 class TallyVotes {
 
 
-    bool bargingFlag;
+    bool bargingFlag = false;
     uOwnerLock ownerLock;            //
     uCondLock waitForGroup;
     uCondLock bargingLock;
     unsigned int numBlocked;
+    void resetcount();
+    void resetlock();
     // private declarations for this  kind of vote-tallier
 #elif defined( SEM )                // semaphore solution
+#include <uSemaphore.h>
 // includes for this kind of vote-tallier
 class TallyVotes {
+
+    bool bargingFlag = false;
+    uSemaphore ownerSem;
+    uSemaphore waitForGroupSem;
+    uSemaphore bargingSem;
+    void resetcount();
+    void resetlock();
     // private declarations for this kind of vote-tallier
 #elif defined( BAR )                // barrier solution
 // includes for this kind of vote-tallier
+#include <uBarrier.h>
 _Cormonitor TallyVotes : public uBarrier {
+
+    void resetcount();
     // private declarations for this kind of vote-tallier
 #else
 #error unsupported voter type
@@ -48,6 +61,7 @@ public:                            // common interface
 
 private:
     Ballot currentBallot;
+
 };
 
 

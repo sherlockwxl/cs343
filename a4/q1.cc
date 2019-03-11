@@ -39,14 +39,18 @@ int main( int argc, char * argv[] ) {
             default: throw 1;
         } // switch
     } catch( ... ) {
-        cerr << "Usage: " << argv[0] << " [ games (>=0) | 'd'"
-                                        "(default 5) [ players (>=2) | 'd' (random 2-10) [ cards (>0) | 'd'"
-                                        "(random 10-200) [ seed (>0) | 'd' (random) ] ] ] ]" << endl;
+        cerr << "Usage: " << argv[0] << " [ voters (> 0) | 'd' (default 6) [ group (> 0) | 'd' (default 3) "
+                                        "[ votes (> 0) | 'd' (default 1) [ seed (> 0), | 'd' (default random) "
+                                        "[ processors (> 0), | 'd' (default 1) ] ] ] ] ]"
+        << endl;
         exit( EXIT_FAILURE );
     } // try
-
-    uProcessor p[processors - 1]; // number of kernel threads
     mprng.set_seed(seed);  //set up seed
+    uProcessor p[processors - 1]; // number of kernel threads
+
+
+    cout << " running " << " voters : " << voters << " group: " << group << " votes: " << votes << " seed : "<<
+    seed<<" pro: " << processors<<endl;
 
     // create printer
     Printer printer(voters);
@@ -56,6 +60,7 @@ int main( int argc, char * argv[] ) {
     Voter * voterlist[voters];
 
     for( int i = 0 ; i < voters; i++){
+        
         voterlist[i] = new Voter(i, votes, tv, printer);
     }
 

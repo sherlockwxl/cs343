@@ -1,6 +1,6 @@
 #include "q1voter.h"
 #include "q1printer.h"
-
+#include <iostream>
 extern MPRNG mprng;
 
 // class constructor for voter
@@ -27,21 +27,26 @@ void Voter::main(){
         TallyVotes::Tour voteres;
 
         try{
-            _Enable{
-                    voteres  = voteTallier.vote(id, vote);
-            }
-        } catch (TallyVotes::Failed){
+
+            voteres  = voteTallier.vote(id, vote);
             yield(mprng(4));
+            printer.print(id, States::Finished, voteres);
+        } catch (TallyVotes::Failed &){
+
             printer.print(id, Voter::States::Failed);
             break;
         }
 
-        yield(mprng(4));
-        printer.print(id, States::Finished, voteres);
+
 
     }
+
     voteTallier.done();
     printer.print(id, States::Terminated);
+
+
+
+
 
 }
 
