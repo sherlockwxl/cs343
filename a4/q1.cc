@@ -1,7 +1,10 @@
+#include <iostream>
+#include "q1printer.h"
 #include "q1voter.h"
 #include "q1tallyVotes.h"
-#include "q1printer.h"
+
 #include "MPRNG.h"
+
 using namespace std;
 MPRNG mprng;
 
@@ -14,9 +17,6 @@ int main( int argc, char * argv[] ) {
     int votes = 1;
     int group = 3;
     int voters = 6;
-
-    //create random number generator
-    mprng = new PRNG(seed);
 
     try {                                               // process command-line arguments
         switch ( argc ) {
@@ -46,12 +46,12 @@ int main( int argc, char * argv[] ) {
     } // try
 
     uProcessor p[processors - 1]; // number of kernel threads
-    prng->seed(seed);//set up seed
+    mprng.set_seed(seed);  //set up seed
 
     // create printer
     Printer printer(voters);
     // create tallyvoter
-    TallyVotes tv(voter, group, printer);
+    TallyVotes tv(voters, group, printer);
     // create list of voters;
     Voter * voterlist[voters];
 
@@ -64,8 +64,6 @@ int main( int argc, char * argv[] ) {
     for( int i = 0 ; i < voters; i++){
         delete voterlist[i];
     }
-
-    delete mprng;
 
 
 

@@ -1,6 +1,15 @@
+#ifndef Q1_TALLYVOTER
+#define Q1_TALLYVOTER
+
+_Monitor Printer;
+
+using namespace std;
+
 #if defined( MC )                    // mutex/condition solution
 // includes for this kind of vote-tallier
 class TallyVotes {
+
+
     bool bargingFlag;
     uOwnerLock ownerLock;            //
     uCondLock waitForGroup;
@@ -25,7 +34,6 @@ _Cormonitor TallyVotes : public uBarrier {
     Printer & printer;
 
     unsigned int groupnumber;
-    Ballot currentBallot;
     unsigned int voted;
     unsigned int voterLeft;
 
@@ -37,4 +45,10 @@ public:                            // common interface
     struct Tour { TourKind tourkind; unsigned int groupno; };
     Tour vote( unsigned int id, Ballot ballot );
     void done();
+
+private:
+    Ballot currentBallot;
 };
+
+
+#endif

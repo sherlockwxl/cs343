@@ -1,3 +1,14 @@
+#ifndef Q1_VOTER
+#define Q1_VOTER
+
+#include "q1tallyVotes.h"
+#include "MPRNG.h"
+
+using namespace std;
+_Monitor Printer;
+
+extern MPRNG mprng;
+
 _Task Voter {
     unsigned int id;
     unsigned int nvotes;
@@ -16,3 +27,5 @@ public:
                       Complete = 'C', Finished = 'F', Failed = 'X', Terminated = 'T' };
         Voter( unsigned int id, unsigned int nvotes, TallyVotes & voteTallier, Printer & printer );
 };
+
+#endif

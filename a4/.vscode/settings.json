@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "vector": "cpp",
+        "limits": "cpp",
+        "new": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "iostream": "cpp"
+    }
+}

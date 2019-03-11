@@ -1,12 +1,11 @@
 #include "q1printer.h"
 #include <iostream>
-
 using namespace std;
 
 // class constructor
 Printer::Printer( unsigned int voters ){
-    this.voters = voters;
-    this.buffer = deque<Printer::data>(voters);
+    voters = voters;
+    buffer = deque<Printer::data>(voters);
     for(unsigned int i = 0 ; i < voters; i++)
     {
         cout << "V" << i;

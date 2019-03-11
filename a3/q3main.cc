@@ -198,7 +198,7 @@ int main( int argc, char * argv[] ) {
             default: throw 1;
         } // switch
     } catch( ... ) {
-        cerr << "Usage: " << argv[0] << "[ Cons (> 0) [ Prods (> 0) [ Produce (> 0) [ BufferSize (> 0)"
+        cerr << "Usage: " << argv[0] << " [ Cons (> 0) [ Prods (> 0) [ Produce (> 0) [ BufferSize (> 0)"
                                         "[ Delay (> 0) ] ] ] ] ]" << endl;
         exit( EXIT_FAILURE );
     } // try
