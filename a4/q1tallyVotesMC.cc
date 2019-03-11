@@ -3,22 +3,26 @@
 #include "q1printer.h"
 #include <iostream>
 #include <algorithm>
+using namespace std;
+extern bool printmode;
 
 
+// helper fucntion to reset the three count every time
 void TallyVotes::resetcount(){
     currentBallot.statue = 0;
     currentBallot.picture = 0;
     currentBallot.giftshop = 0;
 }
 
-
+// helper function to release the two lock current holding
 void TallyVotes::resetlock(){
     bargingFlag = false;
     if(!waitForGroup.empty())
-    waitForGroup.broadcast();
+    waitForGroup.signal();
     if(!bargingLock.empty())
-    bargingLock.broadcast();
+    bargingLock.signal();
 }
+
 // tally voter implementation using  mutex/condition solution
 TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & printer ):
     voters(voters), group(group), printer(printer){
@@ -26,46 +30,31 @@ TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & print
     voted = 0;
     voterLeft = voters;
     resetcount();
-    numBlocked = 0;
 };
 
 TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
-    bool printprint = false;
-    if(printprint)
-    cout << " vote received : "<< id<<" "<< ballot.picture << " " << ballot.statue<<" "<< ballot.giftshop<<endl;
+
     ownerLock.acquire();                   //acquire owner lock
 
-    if(printprint)
 
-    cout << " vote id : "<< id << " got the lock"<<endl;
-    if(voterLeft < group){                 // may have issue with no catch flow
-
-        if(printprint)
-        cout<< "vote fail check fail : " << id <<endl;
-
+    if(voterLeft < group){                 // when
         resetlock();
         ownerLock.release();
         throw Failed();
     }
 
     if(bargingFlag){                       // if barging flag is up, acquire the barging lock
+        if(printmode)
         printer.print(id, Voter::States::Barging); // print the barging message
         bargingLock.wait(ownerLock);
 
-        if(voterLeft < group){                 // may have issue with no catch flow
-            resetlock();
-            ownerLock.release();
-            throw Failed();
-        }
-
 
         if(bargingLock.empty()){
-            bargingFlag = false;
+            //bargingFlag = false;
+        }else{
+            //bargingLock.signal();
         }
     }
-
-    if(printprint)
-    cout<< "vote pass check : " << id <<endl;
 
     // decide the vote result
     Tour res;
@@ -77,46 +66,38 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
     voted++;                               // update the current voted number
 
 
-
+    if(printmode)
     printer.print(id, Voter::States::Vote, ballot);
 
     if(voted == group){                    // when group is formed
-        bargingFlag = true;
-        if(printprint)
-        cout<<" on id : " << id << " group is formed : "<<voted << " and "<<group <<endl;
+        //bargingFlag = true;
+        if(printmode)
         printer.print(id, Voter::States::Complete);
-        waitForGroup.signal();
+
         groupnumber++;
 
+        //waitForGroup.signal();
 
     }else{                                 // when group is not yet formed
+        if(printmode)
         printer.print(id, Voter::States::Block, voted);   // print block message
 
-        if(!bargingLock.empty()){
-            bargingLock.signal();
-        }else{
+        if(bargingLock.empty()){
             bargingFlag = false;
+        }else{
+            bargingLock.signal();
         }
-        if(printprint)
-        cout << " id : "<< id << " wait for more vote" << endl;
         waitForGroup.wait(ownerLock);                          // wait for the group not full lock
-        waitForGroup.signal();
-        printer.print(id, Voter::States::Unblock, voted - 1); // print the unblock message
-
-        if(voterLeft < group){                 // may have issue with no catch flow
-            resetlock();
-            ownerLock.release();
-            throw Failed();
-        }
+       // waitForGroup.signal();
+        if(printmode)
+            printer.print(id, Voter::States::Unblock, voted-1); // print the unblock message
 
     }
 
-
+    voted--;
 
     unsigned int maxVote = max(max(currentBallot.giftshop, currentBallot.picture), currentBallot.statue);
 
-    //cout << " max value is " << maxVote << " " << currentBallot.picture << " " << currentBallot.statue << " "
-        // << currentBallot.giftshop<<endl;
     if(maxVote == currentBallot.giftshop){
         res.tourkind = TourKind::GiftShop;
 
@@ -130,13 +111,39 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
 
 
-    voted --;
 
-    if(voted == 0){
-        resetcount();
-        bargingLock.signal();
-        bargingFlag = false;
+    if(!waitForGroup.empty()){
+        bargingFlag = true;
+        waitForGroup.signal();
+        if(voterLeft < group){                 // may have issue with no catch flow
+            resetlock();
+            ownerLock.release() ;
+            throw Failed();
+        }
+
+    }else{
+        //if(voted == 0){
+            if(voted == 0)
+            resetcount();
+
+            if(bargingLock.empty()) {
+                bargingFlag = false;
+            }else{
+                bargingLock.signal();
+            }
+
+
+        if(voterLeft < group){                 // may have issue with no catch flow
+            resetlock();
+            ownerLock.release() ;
+            throw Failed();
+        }
+
+        //}
     }
+
+
+
 
     ownerLock.release();
     return res;
@@ -151,8 +158,21 @@ void TallyVotes::done(){
     ownerLock.acquire();
     // remove voter;
 
+    if(bargingFlag){                       // if barging flag is up, acquire the barging lock
+        bargingLock.wait(ownerLock);
+
+
+        if(bargingLock.empty()){
+            bargingFlag = false;
+        }else{
+            bargingLock.signal();
+        }
+    }
+
+
+
     voterLeft--;
-    if(voterLeft < group){                 // may have issue with no catch flow
+    if(voterLeft < group && voterLeft > 0){                 // may have issue with no catch flow
         resetlock();
     }
     ownerLock.release();

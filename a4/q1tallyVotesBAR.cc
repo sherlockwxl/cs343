@@ -4,7 +4,7 @@
 #include <iostream>
 #include <algorithm>
 using namespace std;
-
+extern bool printmode;
 
 void TallyVotes::resetcount(){
     currentBallot.statue = 0;
@@ -31,7 +31,9 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
         throw Failed();
     }
 
+    if(printmode)
     printer.print(id, Voter::States::Vote, ballot);  // print vote info
+
     voted ++;
 
     Tour res;                                        // set up the return structure
@@ -41,7 +43,8 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
     currentBallot.statue += ballot.statue;
 
 
-    if(uBarrier::waiters() + 1 < uBarrier::total()){                                 // when need to wait for more voter
+    if(uBarrier::waiters() + 1 < uBarrier::total()){             // when need to wait for more voter
+        if(printmode)
         printer.print(id, Voter::States::Block, voted);          // block current thread
         uBarrier::block();                                       // wait for barrier release
         printer.print(id, Voter::States::Unblock, voted - 1);    // print unblock info

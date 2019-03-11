@@ -2,7 +2,7 @@
 #include "q1printer.h"
 #include <iostream>
 extern MPRNG mprng;
-
+extern bool printmode;
 // class constructor for voter
 Voter::Voter( unsigned int id, unsigned int nvotes, TallyVotes & voteTallier, Printer & printer ):
     id(id), nvotes(nvotes), voteTallier(voteTallier), printer(printer){};
@@ -15,6 +15,7 @@ void Voter::main(){
 
     //print start message
     for(unsigned int i = 0 ; i < nvotes; i++){
+        if(printmode)
         printer.print(id, States::Start);
 
 
@@ -30,9 +31,11 @@ void Voter::main(){
 
             voteres  = voteTallier.vote(id, vote);
             yield(mprng(4));
-            printer.print(id, States::Finished, voteres);
+            if(printmode)
+                printer.print(id, States::Finished, voteres);
         } catch (TallyVotes::Failed &){
 
+            if(printmode)
             printer.print(id, Voter::States::Failed);
             break;
         }
@@ -42,6 +45,7 @@ void Voter::main(){
     }
 
     voteTallier.done();
+    if(printmode)
     printer.print(id, States::Terminated);
 
 

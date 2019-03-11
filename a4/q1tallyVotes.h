@@ -14,7 +14,6 @@ class TallyVotes {
     uOwnerLock ownerLock;            //
     uCondLock waitForGroup;
     uCondLock bargingLock;
-    unsigned int numBlocked;
     void resetcount();
     void resetlock();
     // private declarations for this  kind of vote-tallier

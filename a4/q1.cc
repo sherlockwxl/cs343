@@ -8,6 +8,14 @@
 using namespace std;
 MPRNG mprng;
 
+
+
+#ifdef OUTPUT
+    bool printmode = true;
+#else
+    bool printmode = false;
+#endif
+
 int main( int argc, char * argv[] ) {
 
 
@@ -48,9 +56,6 @@ int main( int argc, char * argv[] ) {
     mprng.set_seed(seed);  //set up seed
     uProcessor p[processors - 1]; // number of kernel threads
 
-
-    cout << " running " << " voters : " << voters << " group: " << group << " votes: " << votes << " seed : "<<
-    seed<<" pro: " << processors<<endl;
 
     // create printer
     Printer printer(voters);

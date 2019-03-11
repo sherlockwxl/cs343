@@ -6,6 +6,7 @@
 #include <uSemaphore.h>
 using namespace std;
 
+extern bool printmode;
 // helper function to reset the counter
 void TallyVotes::resetcount(){
     currentBallot.statue = 0;
@@ -36,7 +37,8 @@ TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & print
 TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
     ownerSem.P();                  //acquire owner sem
-    cout << " voted called " << id<<endl;
+
+
     if(voterLeft < group){                 // when need to
         resetlock();
         ownerSem.V();
@@ -44,7 +46,9 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
     }
 
     if(bargingFlag){                       // if barging flag is up, acquire the barging lock
+        if(printmode)
         printer.print(id, Voter::States::Barging); // print the barging message
+
         bargingSem.P(ownerSem);
 
         if(voterLeft < group){                 // may have issue with no catch flow
@@ -56,6 +60,9 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
         if(bargingSem.empty()){
             bargingFlag = false;
+        }else{
+            if(!bargingFlag)
+                bargingSem.V();
         }
     }
 
@@ -70,32 +77,30 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
     voted++;                               // update the current voted number
 
 
-
+    if(printmode)
     printer.print(id, Voter::States::Vote, ballot);
 
     if(voted == group){                    // when group is formed
         bargingFlag = true;
+        if(printmode)
         printer.print(id, Voter::States::Complete);
-        if(!waitForGroupSem.empty()){
-            waitForGroupSem.V();
-        }
+
         groupnumber++;
 
 
     }else{                                 // when group is not yet formed
+        if(printmode)
         printer.print(id, Voter::States::Block, voted);   // print block message
 
-        if(!bargingSem.empty()){
-            bargingSem.V();
-        }else{
+        if(bargingSem.empty()){
             bargingFlag = false;
+        }else{
+            bargingSem.V();
         }
         waitForGroupSem.P(ownerSem);                          // wait for the group not full sem
 
-        if(!waitForGroupSem.empty()){
-            waitForGroupSem.V();
-        }
 
+        if(printmode)
         printer.print(id, Voter::States::Unblock, voted - 1); // print the unblock message
 
         if(voterLeft < group){                 // may have issue with no catch flow
@@ -122,17 +127,20 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
         }
     }
 
-
+    if(!waitForGroupSem.empty()){
+        waitForGroupSem.V();
+    }
 
     voted --;
-    cout << " id : " << id << " " <<voted<<endl;
+
     if(voted == 0){
         resetcount();
+        bargingFlag = false;
         if(!bargingSem.empty()){
             bargingSem.V();
         }
-        bargingFlag = false;
-        cout << " id : " << id << "reset"<<endl;
+
+
     }
 
     ownerSem.V();
