@@ -27,30 +27,26 @@ void Voter::main(){
 
         TallyVotes::Tour voteres;
 
-        try{
-
+        try{// vote will throw failed when fail to form a group
+            // vote
             voteres  = voteTallier.vote(id, vote);
+
             yield(mprng(4));
+
             if(printmode)
                 printer.print(id, States::Finished, voteres);
+
         } catch (TallyVotes::Failed &){
 
             if(printmode)
             printer.print(id, Voter::States::Failed);
             break;
         }
-
-
-
     }
 
     voteTallier.done();
     if(printmode)
     printer.print(id, States::Terminated);
-
-
-
-
 
 }
 

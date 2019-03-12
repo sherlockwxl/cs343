@@ -6,6 +6,7 @@
 using namespace std;
 extern bool printmode;
 
+// helper function to reset the voter count
 void TallyVotes::resetcount(){
     currentBallot.statue = 0;
     currentBallot.picture = 0;
@@ -26,7 +27,7 @@ TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & print
 
 TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
-    if(voterLeft < uBarrier::total()){                         // if voter left is less than total required throw failed
+    if(voterLeft < uBarrier::total()){                // if voter left is less than total required throw failed
         done();
         throw Failed();
     }
@@ -47,15 +48,17 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
         if(printmode)
         printer.print(id, Voter::States::Block, voted);          // block current thread
         uBarrier::block();                                       // wait for barrier release
+        if(printmode)
         printer.print(id, Voter::States::Unblock, voted - 1);    // print unblock info
 
-    }else{                                                       // when no need to wait for more voter
+    }else{
+        if(printmode)// when no need to wait for more voter
         printer.print(id, Voter::States::Complete);              // print complete info
         uBarrier::block();
         groupnumber++;
     }
 
-    if(voterLeft < uBarrier::total()){                         // if voter left is less than total required throw failed
+    if(voterLeft < uBarrier::total()){                        // if voter left is less than total required throw failed
         done();
         throw Failed();
     }
@@ -64,8 +67,6 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
     // calculate the result tour
     unsigned int maxVote = max(max(currentBallot.giftshop, currentBallot.picture), currentBallot.statue);
 
-    //cout << " max value is " << maxVote << " " << currentBallot.picture << " " << currentBallot.statue << " "
-    // << currentBallot.giftshop<<endl;
     if(maxVote == currentBallot.giftshop){                       // handle tie cases
         res.tourkind = TourKind::GiftShop;
 
@@ -89,7 +90,7 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
 void TallyVotes::done(){
     voterLeft--;
-    if(voterLeft < uBarrier::total() && voterLeft > 0){                 // may have issue with no catch flow
+    if(voterLeft < uBarrier::total() && voterLeft > 0){        // if voter left is less than total required unblock all
         if(uBarrier::waiters() != 0){
             uBarrier::block();
         }

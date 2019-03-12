@@ -18,7 +18,7 @@ _Monitor Printer {    // chose one of the two kinds of type constructor
         };
 
         deque<data> buffer;                             // buffer store queue(for easy pop and push operation)
-        unsigned int voters;                             // number of total voters
+        unsigned int voters;                            // number of total voters
         void flush();                                   // function called to flush the buffer
         void checkflush(unsigned int id);               // helper function to call flush if necessary
 public:

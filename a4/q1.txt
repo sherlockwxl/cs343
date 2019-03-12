@@ -1,0 +1,33 @@
+b:
+
+i:
+processor = 1:
+
+MC:   1.19u 0.02s 0:01.22r 32552kb
+
+SEM:  1.19u 0.01s 0:01.20r 32536kb
+
+BAR:  1.20u 0.02s 0:01.21r 32540kb
+
+
+processor = 2:
+
+MC:   13.39u 0.05s 0:06.71r 32540kb
+
+SEM:  13.29u 0.12s 0:06.69r 32560kb
+
+BAR:  13.48u 0.10s 0:06.78r 33600kb
+
+
+
+ii:
+        user time      real time
+MC:     + 1100%        + 550%
+SEM     + 1116%        + 557%
+BAR     + 1123%        + 560%
+
+
+Three implementations have similar performance when running on single processor.
+When running on multi processors, all three version still have similar performance but slow down dramatically.
+One possible reason is because we are executing on multi processors which increase the context switch chance.
+which leads to much higher lock wait possibility and longer wait time.

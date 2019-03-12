@@ -14,8 +14,8 @@ class TallyVotes {
     uOwnerLock ownerLock;            // mutex lock
     uCondLock waitForGroup;          // condlock wait when number of voters are less than group required
     uCondLock bargingLock;           // barging lock
-    void resetcount();
-    void resetlock();
+    void resetcount();               // helper function to reser the vote count
+    void resetlock();                // helper function to wake all blocked
     // private declarations for this  kind of vote-tallier
 #elif defined( SEM )                  // semaphore solution
 #include <uSemaphore.h>
@@ -26,28 +26,28 @@ class TallyVotes {
     uSemaphore ownerSem;             // mutex lock
     uSemaphore waitForGroupSem;      // condlock wait when number of voters are less than group required
     uSemaphore bargingSem;           // barging lock
-    void resetcount();
-    void resetlock();
+    void resetcount();               // helper function to reser the vote count
+    void resetlock();                // helper function to wake all blocked
     // private declarations for this kind of vote-tallier
-#elif defined( BAR )                // barrier solution
+#elif defined( BAR )                 // barrier solution
 // includes for this kind of vote-tallier
 #include <uBarrier.h>
 _Cormonitor TallyVotes : public uBarrier {
 
-    void resetcount();
+    void resetcount();               // helper function to reser the vote count
     // private declarations for this kind of vote-tallier
 #else
 #error unsupported voter type
 #endif
 // common declarations
 
-    unsigned int voters;
-    unsigned int group;
-    Printer & printer;
+    unsigned int voters;             // total voter number
+    unsigned int group;              // voter number required to form a group
+    Printer & printer;               // reference to a printer
 
-    unsigned int groupnumber;
-    unsigned int voted;
-    unsigned int voterLeft;
+    unsigned int groupnumber;        // current gorup id
+    unsigned int voted;              // counter for how many voters voted
+    unsigned int voterLeft;          // counter for how many voters left
 
 public:                            // common interface
     _Event Failed {};

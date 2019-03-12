@@ -5,8 +5,12 @@ extern bool printmode;
 
 // class constructor
 Printer::Printer( unsigned int voters ){
+
     this->voters = voters;
-    this->buffer = deque<Printer::data>(voters);
+    this->buffer = deque<Printer::data>(voters);   // use queue to store data for easy access by index
+
+    // print start info when constructor is called
+
     for(unsigned int i = 0 ; i < voters; i++)
     {
         if(printmode)
@@ -16,6 +20,7 @@ Printer::Printer( unsigned int voters ){
             cout << "\t";
         }
     }
+
     if(printmode)
     cout << endl;
 
@@ -55,12 +60,15 @@ void Printer::flush(){
             last = i;
         }
     }
+
+
     for(unsigned int i = 0 ; i < voters; i++){
         if(buffer[i].set){
 
             buffer[i].set = false;                //reset the flag
             cout << (char)buffer[i].state;
-            switch(buffer[i].state){
+
+            switch(buffer[i].state){              // for case not listed only state info is required to print
                 case Voter::States::Vote:
                     cout << " " << buffer[i].ballot.picture << "," << buffer[i].ballot.statue<<
                     ","<< buffer[i].ballot.giftshop;
@@ -90,6 +98,7 @@ void Printer::flush(){
     cout <<  endl;
 }
 
+// function is called to determine if flush is required, if do will call flush and set current state
 void Printer::checkflush(unsigned int id){
     if(buffer[id].set){
         flush();
