@@ -10,10 +10,10 @@ _Monitor Printer;
 extern MPRNG mprng;
 
 _Task Voter {
-    unsigned int id;
-    unsigned int nvotes;
-    TallyVotes & voteTallier;
-    Printer & printer;
+    unsigned int id;                     // used to store voter id
+    unsigned int nvotes;                 // number of votes
+    TallyVotes & voteTallier;            // reference to the vote tallier
+    Printer & printer;                   // reference to the printer
     void main();
 public:
         TallyVotes::Ballot cast() {        // cast 3-way vote

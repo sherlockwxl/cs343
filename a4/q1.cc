@@ -9,7 +9,7 @@ using namespace std;
 MPRNG mprng;
 
 
-
+// define output variable
 #ifdef OUTPUT
     bool printmode = true;
 #else
@@ -53,6 +53,7 @@ int main( int argc, char * argv[] ) {
         << endl;
         exit( EXIT_FAILURE );
     } // try
+
     mprng.set_seed(seed);  //set up seed
     uProcessor p[processors - 1]; // number of kernel threads
 
@@ -64,6 +65,7 @@ int main( int argc, char * argv[] ) {
     // create list of voters;
     Voter * voterlist[voters];
 
+    // create each voter
     for( int i = 0 ; i < voters; i++){
         
         voterlist[i] = new Voter(i, votes, tv, printer);

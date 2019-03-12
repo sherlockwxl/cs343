@@ -10,22 +10,22 @@ using namespace std;
 class TallyVotes {
 
 
-    bool bargingFlag = false;
-    uOwnerLock ownerLock;            //
-    uCondLock waitForGroup;
-    uCondLock bargingLock;
+    bool bargingFlag = false;        // barging flag
+    uOwnerLock ownerLock;            // mutex lock
+    uCondLock waitForGroup;          // condlock wait when number of voters are less than group required
+    uCondLock bargingLock;           // barging lock
     void resetcount();
     void resetlock();
     // private declarations for this  kind of vote-tallier
-#elif defined( SEM )                // semaphore solution
+#elif defined( SEM )                  // semaphore solution
 #include <uSemaphore.h>
 // includes for this kind of vote-tallier
 class TallyVotes {
 
-    bool bargingFlag = false;
-    uSemaphore ownerSem;
-    uSemaphore waitForGroupSem;
-    uSemaphore bargingSem;
+    bool bargingFlag = false;        // barging flag
+    uSemaphore ownerSem;             // mutex lock
+    uSemaphore waitForGroupSem;      // condlock wait when number of voters are less than group required
+    uSemaphore bargingSem;           // barging lock
     void resetcount();
     void resetlock();
     // private declarations for this kind of vote-tallier
