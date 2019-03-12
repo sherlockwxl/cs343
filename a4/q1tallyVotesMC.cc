@@ -30,8 +30,6 @@ TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & print
     voted = 0;
     voterLeft = voters;
     resetcount();
-    prevgroupnumber = 1;
-    count = 0;
 };
 
 TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
@@ -172,7 +170,7 @@ void TallyVotes::done(){
     ownerLock.acquire();
 
     // remove voter;
-    if(!waitForGroup.empty()||!bargingLock.empty()){
+    if(!waitForGroup.empty()||!bargingLock.empty()||bargingFlag){
         if(!bargingFlag){
             if(printprint)
             cout<<"done call signal on "<< voted<<endl;
@@ -199,7 +197,8 @@ void TallyVotes::done(){
     voterLeft--;
 
     if(voterLeft < group && voterLeft > 0 ){                 // may have issue with no catch flow
-        //cout<<" reset in done raise on voterleft : "<<voterLeft<< " voted left: "<<voted<<endl;
+        if(printprint)
+        cout<<" reset in done raise on voterleft : "<<voterLeft<< " voted left: "<<voted<<endl;
         resetlock();
     }
     if(printprint)
