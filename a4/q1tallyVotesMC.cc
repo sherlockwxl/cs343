@@ -30,10 +30,13 @@ TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & print
     voted = 0;
     voterLeft = voters;
     resetcount();
+    prevgroupnumber = 1;
+    count = 0;
 };
 
 TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
+    bool printprint = false;
     ownerLock.acquire();                   //acquire owner lock
 
 
@@ -48,12 +51,6 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
         printer.print(id, Voter::States::Barging); // print the barging message
         bargingLock.wait(ownerLock);
 
-
-        if(bargingLock.empty()){
-            //bargingFlag = false;
-        }else{
-            //bargingLock.signal();
-        }
     }
 
     // decide the vote result
@@ -71,30 +68,35 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
     if(voted == group){                    // when group is formed
         //bargingFlag = true;
+
+        //cout << "vote  id : " << id << " grouped "<< endl;
         if(printmode)
         printer.print(id, Voter::States::Complete);
 
         groupnumber++;
-
-        //waitForGroup.signal();
 
     }else{                                 // when group is not yet formed
         if(printmode)
         printer.print(id, Voter::States::Block, voted);   // print block message
 
         if(bargingLock.empty()){
+            //cout<<"id : " << id << " set to false 1"<<endl;
             bargingFlag = false;
         }else{
             bargingLock.signal();
         }
         waitForGroup.wait(ownerLock);                          // wait for the group not full lock
-       // waitForGroup.signal();
+
         if(printmode)
             printer.print(id, Voter::States::Unblock, voted-1); // print the unblock message
 
     }
 
     voted--;
+
+
+
+
 
     unsigned int maxVote = max(max(currentBallot.giftshop, currentBallot.picture), currentBallot.statue);
 
@@ -111,29 +113,41 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
 
 
-
+    if(printprint)
+    cout<<"id : " << id << " unblocked  on "<<voted<<endl;
     if(!waitForGroup.empty()){
+        if(printprint)
+        cout<<"id : " << id << " set to true 1"<<endl;
         bargingFlag = true;
         waitForGroup.signal();
+
         if(voterLeft < group){                 // may have issue with no catch flow
+            if(printprint)
+                cout<<"id : " << id << " raise on voterleft : "<<voterLeft<< " voted left: "<<voted<<endl;
             resetlock();
             ownerLock.release() ;
             throw Failed();
         }
 
+
     }else{
         //if(voted == 0){
-            if(voted == 0)
-            resetcount();
+        resetcount();
 
-            if(bargingLock.empty()) {
-                bargingFlag = false;
-            }else{
-                bargingLock.signal();
-            }
 
+        if(bargingLock.empty()) {
+            if(printprint)
+            cout<<"id : " << id << " set to false 2"<<endl;
+            bargingFlag = false;
+        }else{
+            if(printprint)
+            cout<<"id : " << id << " release barging"<<endl;
+            bargingLock.signal();
+        }
 
         if(voterLeft < group){                 // may have issue with no catch flow
+            if(printprint)
+            cout<<"id : " << id << " raise on voterleft : "<<voterLeft<< " voted left: "<<voted<<endl;
             resetlock();
             ownerLock.release() ;
             throw Failed();
@@ -154,27 +168,42 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
 void TallyVotes::done(){
 
-
+    bool printprint = false;
     ownerLock.acquire();
+
     // remove voter;
-
-    if(bargingFlag){                       // if barging flag is up, acquire the barging lock
-        bargingLock.wait(ownerLock);
-
-
-        if(bargingLock.empty()){
-            bargingFlag = false;
-        }else{
+    if(!waitForGroup.empty()||!bargingLock.empty()){
+        if(!bargingFlag){
+            if(printprint)
+            cout<<"done call signal on "<< voted<<endl;
             bargingLock.signal();
+        }else{
+            if(printprint){
+            cout<<"voter left : " << voted << " call barging "<< waitForGroup.empty()
+                <<"  " << bargingLock.empty()<<endl;}
+            bargingLock.wait(ownerLock);
+            if(printprint)
+            cout<<"voter left : " << voted << " release from barging"<<endl;
+            if(bargingLock.empty()) {
+                bargingFlag = false;
+            }else{
+                bargingLock.signal();
+            }
         }
+
     }
 
 
-
+    if(printprint)
+    cout<<" reduce voterleft on voterleft : "<<voterLeft<< " voted left: "<<voted<<endl;
     voterLeft--;
-    if(voterLeft < group && voterLeft > 0){                 // may have issue with no catch flow
+
+    if(voterLeft < group && voterLeft > 0 ){                 // may have issue with no catch flow
+        //cout<<" reset in done raise on voterleft : "<<voterLeft<< " voted left: "<<voted<<endl;
         resetlock();
     }
+    if(printprint)
+    cout<<"done end "<<voterLeft<<endl;
     ownerLock.release();
 
 }
