@@ -15,7 +15,7 @@ void TallyVotes::resetcount(){
 
 
 void TallyVotes::checkvoter(int type){
-    if(voterLeft < group){                // if voter left is less than total required throw failed
+    if(voterLeft < uBarrier::total()){                // if voter left is less than total required throw failed
         if(uBarrier::waiters() != 0){
             if(type != 2)
             uBarrier::block();
