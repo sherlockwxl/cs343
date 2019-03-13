@@ -35,6 +35,8 @@ class TallyVotes {
 _Cormonitor TallyVotes : public uBarrier {
 
     void resetcount();               // helper function to reser the vote count
+    void checkvoter(int type);       // helper function to check voter is enough
+                                     // one for throw failed zero for no throw 2 for no unblock
     // private declarations for this kind of vote-tallier
 #else
 #error unsupported voter type

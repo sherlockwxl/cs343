@@ -14,6 +14,16 @@ void TallyVotes::resetcount(){
 }
 
 
+void TallyVotes::checkvoter(int type){
+    if(voterLeft < group){                // if voter left is less than total required throw failed
+        if(uBarrier::waiters() != 0){
+            if(type != 2)
+            uBarrier::block();
+        }
+        if(type > 0)
+        throw Failed();
+    }
+}
 
 // tally voter implementation using  barrier solution
 TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & printer ):
@@ -27,10 +37,7 @@ TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & print
 
 TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
-    if(voterLeft < uBarrier::total()){                // if voter left is less than total required throw failed
-        done();
-        throw Failed();
-    }
+    checkvoter(1);
 
     if(printmode)
     printer.print(id, Voter::States::Vote, ballot);  // print vote info
@@ -58,10 +65,7 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
         groupnumber++;
     }
 
-    if(voterLeft < uBarrier::total()){                        // if voter left is less than total required throw failed
-        done();
-        throw Failed();
-    }
+    checkvoter(2);
 
 
     // calculate the result tour
@@ -90,9 +94,5 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
 void TallyVotes::done(){
     voterLeft--;
-    if(voterLeft < uBarrier::total() && voterLeft > 0){        // if voter left is less than total required unblock all
-        if(uBarrier::waiters() != 0){
-            uBarrier::block();
-        }
-    }
+    checkvoter(0);
 }
