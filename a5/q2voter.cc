@@ -17,7 +17,7 @@ void Voter::main(){
     //print start message
     for(unsigned int i = 0 ; i < nvotes; i++){
         if(printmode)
-        printer.print(id + 1, States::Start);
+        printer.print(id, States::Start);
 
 
         //second yield
@@ -30,24 +30,24 @@ void Voter::main(){
 
         try{// vote will throw failed when fail to form a group
             // vote
-            voteres  = voteTallier.vote(id + 1, vote);
+            voteres  = voteTallier.vote(id, vote);
 
             yield(mprng(4));
 
             if(printmode)
-                printer.print(id + 1, States::Finished, voteres);
+                printer.print(id, States::Finished, voteres);
 
         } catch (TallyVotes::Failed &){
 
             if(printmode)
-            printer.print(id + 1, Voter::States::Failed);
+            printer.print(id, Voter::States::Failed);
             break;
         }
     }
 
     voteTallier.done();
     if(printmode)
-    printer.print(id + 1, States::Terminated);
+    printer.print(id, States::Terminated);
 
 }
 

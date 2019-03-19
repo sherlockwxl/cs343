@@ -9,7 +9,7 @@ using namespace std;
 #if defined( EXT )                           // external scheduling monitor solution
 // includes for this kind of vote-tallier
 _Monitor TallyVotes {
-
+    int doneUnblocked;
     // private declarations for this kind of vote-tallier
 #elif defined( INT )                         // internal scheduling monitor solution
 // includes for this kind of vote-tallier

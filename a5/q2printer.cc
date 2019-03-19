@@ -100,7 +100,6 @@ void Printer::flush(){
 
 // function is called to determine if flush is required, if do will call flush and set current state
 void Printer::checkflush(unsigned int id){
-    id -= 1;
     if(buffer[id].set){
         flush();
     }
@@ -109,14 +108,12 @@ void Printer::checkflush(unsigned int id){
 
 // print function for update the state
 void Printer::print( unsigned int id, Voter::States state ){
-    id -= 1;
     checkflush(id);
     buffer[id].state = state;
 }
 
 // print function for update the state and tour
 void Printer::print( unsigned int id, Voter::States state, TallyVotes::Tour tour ){
-    id -= 1;
     checkflush(id);
     buffer[id].state = state;
     buffer[id].tour = tour;
@@ -124,7 +121,6 @@ void Printer::print( unsigned int id, Voter::States state, TallyVotes::Tour tour
 
 // print function for update the state and ballot
 void Printer::print( unsigned int id, Voter::States state, TallyVotes::Ballot ballot ){
-    id -= 1;
     checkflush(id);
     buffer[id].state = state;
     buffer[id].ballot = ballot;
@@ -132,7 +128,6 @@ void Printer::print( unsigned int id, Voter::States state, TallyVotes::Ballot ba
 
 // print function for update the state and numBlocked
 void Printer::print( unsigned int id, Voter::States state, unsigned int numBlocked ){
-    id -= 1;
     checkflush(id);
     buffer[id].state = state;
     buffer[id].numBlocked = numBlocked;

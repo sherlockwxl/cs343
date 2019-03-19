@@ -1,0 +1,1 @@
+diff <(./vote 5 5 2 1 1) <(./voteEXT 5 5 2 1 1)

@@ -19,15 +19,16 @@ TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & print
     groupnumber = 1;
     voted = 0;
     voterLeft = voters;
+    doneUnblocked = 0;
     resetcount();
 };
 
-TallyVotes::Tour vote( unsigned int id, Ballot ballot ){
+TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
+    if(voterLeft < group){ // when voter left cant form a group throw error
+        throw Failed();
+    }
 
     Tour res;
-    if ( id == 0 ){
-        return res;
-    }
     //build vote result first
 
     res.groupno = groupnumber;
@@ -51,10 +52,22 @@ TallyVotes::Tour vote( unsigned int id, Ballot ballot ){
         if(printmode)
             printer.print(id, Voter::States::Block, voted);
 
-        _Accept(vote);
+        for(;;){
+            _Accept(vote){
+                if(printmode)
+                    printer.print(id, Voter::States::Unblock, voted-1); // print the unblock message
+                break;
+            } or _Accept(done){
+                if(printmode)
+                    printer.print(id, Voter::States::Done);
+                if(voterLeft < group){ // when voter left cant form a group throw error
+                    if(printmode)
+                        printer.print(id, Voter::States::Unblock, voted-1); // print the unblock message
+                    throw Failed();
+                }
+            }
+        }
 
-        if(printmode)
-            printer.print(id, Voter::States::Unblock, voted-1); // print the unblock message
     }
 
     voted--;
@@ -82,7 +95,6 @@ TallyVotes::Tour vote( unsigned int id, Ballot ballot ){
     if(voterLeft < group){ // when voter left cant form a group throw error
         throw Failed();
     }
-
     return res;
 
 }
@@ -90,8 +102,7 @@ TallyVotes::Tour vote( unsigned int id, Ballot ballot ){
 
 void TallyVotes::done() {
     voterLeft--;
-    Ballot tempBallot;
     if(voterLeft < group){
-        vote(0,tempBallot);
+        doneUnblocked = 1;
     }
 }
