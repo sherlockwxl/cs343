@@ -19,7 +19,6 @@ TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & print
     groupnumber = 1;
     voted = 0;
     voterLeft = voters;
-    doneUnblocked = 0;
     resetcount();
 };
 
@@ -52,12 +51,12 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
         if(printmode)
             printer.print(id, Voter::States::Block, voted);
 
-        for(;;){
-            _Accept(vote){
+        for(;;){                // loop for accept done or vote
+            _Accept(vote){      // when accept vote break loop
                 if(printmode)
                     printer.print(id, Voter::States::Unblock, voted-1); // print the unblock message
                 break;
-            } or _Accept(done){
+            } or _Accept(done){ // when accept done keep loop and check for fail case
                 if(printmode)
                     printer.print(id, Voter::States::Done);
                 if(voterLeft < group){ // when voter left cant form a group throw error
@@ -100,9 +99,6 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 }
 
 
-void TallyVotes::done() {
+void TallyVotes::done() {  // done function only need to update the voterleft
     voterLeft--;
-    if(voterLeft < group){
-        doneUnblocked = 1;
-    }
 }

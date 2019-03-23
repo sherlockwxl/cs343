@@ -72,7 +72,6 @@ int main( int argc, char * argv[] ) {
     }
 
     // all done remove voter;
-
     for( int i = 0 ; i < voters; i++){
         delete voterlist[i];
     }

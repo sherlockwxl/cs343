@@ -44,11 +44,9 @@ void Voter::main(){
             break;
         }
     }
-
     voteTallier.done();
     if(printmode)
     printer.print(id, States::Terminated);
-
 }
 
 
