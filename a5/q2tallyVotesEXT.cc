@@ -53,11 +53,7 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
         for(;;){                // loop for accept done or vote
             try{
-                _Accept(vote){      // when accept vote break loop
-                    if(printmode)
-                        printer.print(id, Voter::States::Unblock, voted-1); // print the unblock message
-                    break;
-                } or _Accept(done){ // when accept done keep loop and check for fail case
+                _Accept(done){ // when accept done keep loop and check for fail case
                     if(printmode)
                         printer.print(id, Voter::States::Done);
                     if(voterLeft < group){ // when voter left cant form a group throw error
@@ -65,6 +61,11 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
                             printer.print(id, Voter::States::Unblock, voted-1); // print the unblock message
                         throw Failed();
                     }
+                }
+                or _Accept(vote){      // when accept vote break loop
+                    if(printmode)
+                        printer.print(id, Voter::States::Unblock, voted-1); // print the unblock message
+                    break;
                 }
             } catch ( uMutexFailure::RendezvousFailure ) {
                 if(printmode)

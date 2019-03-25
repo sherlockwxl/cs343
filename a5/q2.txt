@@ -32,19 +32,29 @@ TASK:  21.37u 0.05s 0:10.72r 33536kb
 
 ii:
         user time      real time
-EXT:
+EXT:    + 850%         + 380%
 
-INT:
+INT:    + 788%         + 386%
 
-INTB:
+INTB:   + 1028%        + 509%
 
-AUTO:
+AUTO:   + 864%         + 423%
 
-TASK:
+TASK:   + 1214%        + 598%
 
 
 
-Three implementations have similar performance when running on single processor.
-When running on multi processors, all three version still have similar performance but slow down dramatically.
+Single processor:
+TASK < INT < AUTO < EXT < INTB
+
+EXT/INT/AUTO/TASK have similar performance when running on single processor. And the INTB implementation is
+a lot slower than other four since we bring in barging, which means there is a chance that new vote
+will barge into the current group and that need to be blocked and wake up which takes more time.
+
+multi processors:
+INT < EXT < AUTO < TASK < INTB
+
+When running on multi processors, EXT/INT/AUTO/TASK  still have similar performance but slow down dramatically.
 One possible reason is because we are executing on multi processors which increase the context switch chance.
-which leads to much higher lock wait possibility and longer wait time.
+which leads to much higher lock wait possibility and longer wait time. And the INB is still the slowest because of
+the barging issue.

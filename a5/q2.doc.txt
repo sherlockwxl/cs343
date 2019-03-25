@@ -205,3 +205,11 @@ $ diff <(./vote 9 8 2 11112 1) <( ./voteEXT 9 8 2 11112 1)
 All other implementations are also tested against executable files provided. Please note
 that there will be some variation when vote/group size are big. But small input values
 produce same output in most cases.
+
+Some other testing cases for edge case and different seed:
+diff <( ./vote 3 2 2 123 1) <(./voteEXT 3 2 2 123 1)
+diff <( ./vote 5 2 3 12332 1) <(./voteEXT 5 2 3 12332 1)
+diff <( ./vote 5 5 3 12332 1) <(./voteEXT 5 5 3 12332 1)
+diff <( ./vote 7 5 3 12332 1) <(./voteEXT 7 5 3 12332 1)
+diff <( ./vote 7 5 3 1233211 1) <(./voteEXT 7 5 3 1233211 1)
+
