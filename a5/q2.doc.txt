@@ -1,8 +1,11 @@
 Test document for q2
+#note: the test results showed in this test document were tested using IMPL=EXT
+other 4 implementations are also tested using same input against executable file provided.
+using $ diff <(./vote ....) <(./voteEXT ... )
 =========================================================================================
 1. test for invalid input parameters:
 
-a: input not number
+a: inputs are not integer
 $./vote qwe qwe qwe qwe
 Usage: ./vote [ voters (> 0) | 'd' (default 6) [ group (> 0) | 'd' (default 3) [ votes (> 0)
 | 'd' (default 1) [ seed (> 0), | 'd' (default random) [ processors (> 0), | 'd' (default 1) ] ] ] ] ]
@@ -17,7 +20,7 @@ $./vote 0 0
 Usage: ./vote [ voters (> 0) | 'd' (default 6) [ group (> 0) | 'd' (default 3) [ votes (> 0)
 | 'd' (default 1) [ seed (> 0), | 'd' (default random) [ processors (> 0), | 'd' (default 1) ] ] ] ] ]
 
-d: for less voter than group required
+d: less voter than group required
 $./vote 2 3 1
 V0	V1
 *******	*******
@@ -34,55 +37,63 @@ a:
 missing one or more parameters:
 
 xilingwu@ubuntu:~/Documents/cs343-git/cs343/a5$ ./vote
-V0	V1	V2	V3	V4	V5
+V0	    V1	    V2	    V3	    V4	    V5
 *******	*******	*******	*******	*******	*******
-S		S			S
-		V 2,0,1
-V 2,1,0		B 1	S	S
-B 2			V 1,0,2
-U 0	S	U 1	C
-		F p 1		V 2,1,0
-				B 1	V 2,0,1
-F p 1	V 0,2,1	T	F p 1		B 2
-	C			U 1
-T			T	F p 2	U 0
-	F p 2			T	F p 2
-	T				T
+S
+V 2,1,0
+B 1		        S
+		        V 2,1,0
+	    S	            B 2	    S
+	    V 0,1,2
+U 0	    C	    U 1		        S	    S
+	    F p 1
+	    T		        V 2,1,0
+F p 1			        B 1
+T		    F p 1	    D
+		    T	        D	    V 1,2,0
+				                B 2	    V 2,1,0
+					                    C
+			            U 0	    U 1	    F p 2
+				                F p 2	T
+			            F p 2	T
+			            T
 *****************
+All tours started
+
 All tours started
 
 
 b: only one parameter
 $./vote 3
-V0	V1	V2
+V0	    V1	    V2
 *******	*******	*******
-	S
-	V 0,2,1
-S	B 1
+	    S
+	    V 0,2,1
+S	    B 1
 V 1,0,2
-B 2		S
-		V 2,0,1
-	U 1	C
-U 0		F g 1
-F g 1		T
-T	F g 1
-	T
+B 2		        S
+		        V 2,0,1
+	    U 1	    C
+U 0		        F g 1
+F g 1		    T
+T	    F g 1
+	    T
 *****************
 All tours started
 
 -----------------------------------------------------------------------------------------
 3. test for voter number equals group voter required
 $./vote 3 3 1
-V0	V1	V2
+V0	    V1	    V2
 *******	*******	*******
 S		S
 V 0,1,2
-B 1	S
-	V 0,2,1
-	B 2	V 1,0,2
-		C
-U 1	U 0	F g 1
-	F g 1	T
+B 1	            S
+	    V 0,2,1
+	    B 2	    V 1,0,2
+		        C
+U 1	    U 0	    F g 1
+	    F g 1	T
 F g 1	T
 T
 *****************
@@ -104,4 +115,93 @@ T
 All tours started
 
 -----------------------------------------------------------------------------------------
-4. test for voter
+4. test for small voter number
+$ ./vote 2 1 1
+V0	    V1
+*******	*******
+S	    S
+	    V 1,2,0
+V 0,1,2	C
+C
+F g 2
+T	    F s 1
+	    T
+*****************
+All tours started
+
+$ ./vote 2 1 2
+V0	    V1
+*******	*******
+	    S
+        V 0,2,1
+        C
+        F s 1
+        S
+        V 0,2,1
+        C
+        F s 2
+S	T
+V 0,2,1
+C
+F s 3
+S
+V 2,1,0
+C
+F p 4
+T
+*****************
+All tours started
+-----------------------------------------------------------------------------------------
+5. test large voter number small group size
+#note: use diff commend compare with EXT executable provided to save space since the
+output is very large.
+
+$ diff <(./vote 5 2 1 123 1) <( ./voteEXT 5 2 1 123 1)0a1
+> 123 Random seed for comparison testing. Students do not print seed.
+
+$ diff <(./vote 7 3 1 1 1) <( ./voteEXT 7 3 1 1 1)
+0a1
+> 1 Random seed for comparison testing. Students do not print seed.
+
+
+-----------------------------------------------------------------------------------------
+6. test large voter number large group size
+
+$ diff <(./vote 7 6 1 1 1) <( ./voteEXT 7 6 1 1 1)
+0a1
+> 1 Random seed for comparison testing. Students do not print seed.
+
+$ diff <(./vote 10 9 1 231 1) <( ./voteEXT 10 9 1 231 1)
+0a1
+> 231 Random seed for comparison testing. Students do not print seed.
+
+$ diff <(./vote 12 9 1 231 1) <( ./voteEXT 12 9 1 231 1)
+0a1
+> 231 Random seed for comparison testing. Students do not print seed.
+
+-----------------------------------------------------------------------------------------
+7. test for multiple votes(> 1) and large voter number small group size
+
+$ diff <(./vote 5 2 3 2 1) <( ./voteEXT 5 2 3 2 1)
+0a1
+> 2 Random seed for comparison testing. Students do not print seed.
+
+$ diff <(./vote 6 3 2 1 1) <( ./voteEXT 6 3 2 1 1)
+0a1
+> 1 Random seed for comparison testing. Students do not print seed.
+
+-----------------------------------------------------------------------------------------
+8. test for multiple votes(> 1) and large voter number large group size
+
+$ diff <(./vote 6 5 3 123 1) <( ./voteEXT 6 5 3 123 1)
+0a1
+> 123 Random seed for comparison testing. Students do not print seed.
+
+$ diff <(./vote 9 8 2 11112 1) <( ./voteEXT 9 8 2 11112 1)
+0a1
+> 11112 Random seed for comparison testing. Students do not print seed.
+
+-----------------------------------------------------------------------------------------
+All other implementations are also tested against executable files provided. Please note
+that there will be some variation when vote/group size are big. But small input values
+produce same output in most cases.

@@ -1,0 +1,6 @@
+The situation should be a livelock.
+
+The difference between deadlock and livelock is whether ths event that processes are waiting could/will happen.
+In the movie, all angels are waiting because they ware looking at each other and wait for other angel to stop
+looking at them. Similar to the "you go first" problem in the note, by removing one angel from the cycle, the lock
+issue is solved.

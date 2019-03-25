@@ -1,0 +1,50 @@
+b:
+
+i:
+processor = 1:
+
+EXT:   2.20u 0.02s 0:02.25r 32400kb
+
+INT:   2.12u 0.04s 0:02.17r 32368kb
+
+INTB:  4.90u 0.04s 0:04.98r 32268kb
+
+AUTO:  2.13u 0.03s 0:02.18r 32516kb
+
+TASK:  1.76u 0.02s 0:01.79r 32480kb
+
+
+processor = 2:
+
+EXT:   17.09u 0.04s 0:08.57r 32504kb
+
+INT:   16.72u 0.05s 0:08.38r 32488kb
+
+INTB:  50.42u 0.36s 0:25.39r 32508kb
+
+AUTO:  18.41u 0.05s 0:09.23r 32540kb
+
+TASK:  21.37u 0.05s 0:10.72r 33536kb
+
+
+
+
+
+ii:
+        user time      real time
+EXT:
+
+INT:
+
+INTB:
+
+AUTO:
+
+TASK:
+
+
+
+Three implementations have similar performance when running on single processor.
+When running on multi processors, all three version still have similar performance but slow down dramatically.
+One possible reason is because we are executing on multi processors which increase the context switch chance.
+which leads to much higher lock wait possibility and longer wait time.
