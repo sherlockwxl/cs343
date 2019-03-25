@@ -13,7 +13,7 @@ void TallyVotes::resetcount(){
     currentBallot.giftshop = 0;
 }
 
-// tally voter implementation using  barrier solution
+// tally voter implementation using  internal schedule solution
 TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & printer ):
         voters(voters), group(group), printer(printer){
     groupnumber = 1;
@@ -93,7 +93,7 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
 void TallyVotes::done() {
     voterLeft--;
-    if(voterLeft < group){
+    if(voterLeft < group){        // when fail happens need to unblock all
         groupFormed.signal();
     }
 

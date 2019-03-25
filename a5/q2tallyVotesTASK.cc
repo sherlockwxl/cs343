@@ -21,6 +21,7 @@ TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & print
     resetcount();
 };
 
+// vote is an interface, will block after each vote and only throw fail when necessary
 TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
     newid = id;
     newBallot = ballot;
@@ -30,11 +31,13 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
     }
     return res;
 }
+
 void TallyVotes::done() {
 
     voterLeft--;
 }
 
+// tally votes main handle group
 void TallyVotes::main(){
     for(;;){
          _Accept(vote){
@@ -83,13 +86,12 @@ void TallyVotes::main(){
                 resetcount();
             }
         }
-        or _Accept(done){
-            //cout<<" done called and new id is "<<newid <<" waiting voted is "<<voted<< endl;
+        or _Accept(done){       // accept done call and check if will fail to form next group
+
             for(unsigned int i = 0 ; i < voted; i++){
                 if(!cond.empty()){
 
                     unsigned int forntId = cond.front();
-                    //cout<<" now "<<newid<<" will wake up "<<forntId<<endl;
                     if(printmode)
                         printer.print(forntId, Voter::States::Done);
 
@@ -108,7 +110,7 @@ void TallyVotes::main(){
 
         }
 
-        or _Accept(~TallyVotes){
+        or _Accept(~TallyVotes){      // when descructor is called, need to wake up all vote then exit
             done();
             return;
          }

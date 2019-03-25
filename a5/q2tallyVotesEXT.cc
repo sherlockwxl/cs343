@@ -13,7 +13,7 @@ void TallyVotes::resetcount(){
     currentBallot.giftshop = 0;
 }
 
-// tally voter implementation using  barrier solution
+// tally voter implementation using  external scheduling solution
 TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & printer ):
         voters(voters), group(group), printer(printer){
     groupnumber = 1;

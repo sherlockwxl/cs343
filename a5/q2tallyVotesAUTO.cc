@@ -26,7 +26,7 @@ void TallyVotes::printerHelper(bool mode,  unsigned int id, int type, unsigned i
     }
 }
 
-// tally voter implementation using  barrier solution
+// tally voter implementation using  auto signal solution
 TallyVotes::TallyVotes( unsigned int voters, unsigned int group, Printer & printer ):
         voters(voters), group(group), printer(printer){
     groupnumber = 1;
@@ -55,18 +55,15 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
     if(printmode)
         printer.print(id, Voter::States::Vote, ballot);
 
-    WAITUNTIL((voted == group),
-            printerHelper(printmode, id, 1, voted);,
-            printerHelper(printmode, id, 2, voted-1) // print the unblock message
+    WAITUNTIL((voted == group),                        // condition is when voted == group need to unblock all
+            printerHelper(printmode, id, 1, voted);,   // print the block message
+            printerHelper(printmode, id, 2, voted-1)   // print unblock message
             )
-    if(voted == group){// when voter number reach voter number required
 
+    if(voted == group){// when voter number reach voter number required
         if(printmode)
             printer.print(id, Voter::States::Complete);
-
         groupnumber++;
-
-
     }
 
     voted--;
@@ -93,7 +90,8 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
     if(voterLeft < group){ // when voter left cant form a group throw error
         throw Failed();
     }
-    RETURN(res);
+
+    RETURN(res);           // return the vote result
 
 }
 

@@ -13,7 +13,7 @@ _Monitor TallyVotes {
 #elif defined( INT )                         // internal scheduling monitor solution
 // includes for this kind of vote-tallier
 _Monitor TallyVotes {
-    uCondition groupFormed;
+    uCondition groupFormed;                  // ucondition used to block the thread
     // private declarations for this kind of vote-tallier
 #elif defined( INTB )                        // internal scheduling monitor solution with barging
 // includes for this kind of vote-tallier
@@ -72,8 +72,8 @@ public:                                    // common interface
 private:
     Ballot currentBallot;
 #if defined( TASK )
-    Ballot newBallot;
-    Tour res;
+    Ballot newBallot;                // Ballot used to save the new vote
+    Tour res;                        // Temp tour used to pass back to voter
 #endif
 };
 

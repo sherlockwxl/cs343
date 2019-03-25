@@ -51,7 +51,6 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
         if(printmode)
             printer.print(id, Voter::States::Barging); // print the barging message
 
-            //cout<<"wait"<<endl;
         wait();
         // wakeup after barging
         if(voterLeft < group){ // when voter left cant form a group throw error
@@ -126,7 +125,7 @@ TallyVotes::Tour TallyVotes::vote( unsigned int id, Ballot ballot ){
 
 void TallyVotes::done() {
     voterLeft--;
-    if(voterLeft < group){
+    if(voterLeft < group){       // when fail happens need to wake up all
         signalAll();
     }
 
